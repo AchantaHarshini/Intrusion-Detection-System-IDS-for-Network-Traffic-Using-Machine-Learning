@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ids-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+```
+
+**File 2: `.node-version`** (in root folder)
+```
+18.18.0
