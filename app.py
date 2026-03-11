@@ -29,7 +29,21 @@ def get_latest_uploaded_file():
 def home():
     return render_template("login.html")
 
+@app.route("/login", methods=["POST"])
+def login():
 
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    # Simple demo authentication
+    if username == "admin" and password == "admin":
+        return render_template("admin-dashboard.html")
+
+    elif username == "user" and password == "user":
+        return render_template("user-dashboard.html")
+
+    else:
+        return render_template("login.html", error="Invalid Credentials")
 # ================= FILE UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -191,3 +205,4 @@ if __name__ == "__main__":
     print(f"🚀 IDS Backend running on port {port}")
 
     app.run(host="0.0.0.0", port=port)
+
