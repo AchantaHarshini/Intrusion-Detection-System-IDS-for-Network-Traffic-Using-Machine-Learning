@@ -31,7 +31,8 @@ def get_latest_uploaded_file():
         if f.endswith(".csv")
     ]
     return max(files, key=os.path.getctime) if files else None
-
+@app.route("/admin/file/<int:file_id>")
+def analyze_file(file_id):
 
 # ================= HOME =================
 @app.route("/")
@@ -223,3 +224,4 @@ if __name__ == "__main__":
     print(f"🚀 IDS Backend running on port {port}")
 
     app.run(host="0.0.0.0", port=port)
+
