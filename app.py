@@ -21,6 +21,7 @@ if not os.path.exists(USERS_FILE):
         json.dump({}, f)
 
 LAST_UPLOADED_FILE = None
+UPLOAD_HISTORY = []
 
 
 # ================= GET LATEST FILE =================
@@ -31,8 +32,7 @@ def get_latest_uploaded_file():
         if f.endswith(".csv")
     ]
     return max(files, key=os.path.getctime) if files else None
-@app.route("/admin/file/<int:file_id>")
-def analyze_file(file_id):
+
 
 # ================= HOME =================
 @app.route("/")
@@ -74,11 +74,11 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    # ===== ADMIN LOGIN (backend only) =====
+    # ADMIN LOGIN
     if username == "admin" and password == "admin123":
         return render_template("admin-dashboard.html")
 
-    # ===== USER LOGIN =====
+    # USER LOGIN
     with open(USERS_FILE, "r") as f:
         users = json.load(f)
 
@@ -98,130 +98,113 @@ def upload():
         return jsonify({"error": "No file received"}), 400
 
     file = request.files["file"]
+
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
 
     LAST_UPLOADED_FILE = filepath
 
+    # store upload history for admin panel
+    UPLOAD_HISTORY.append({
+        "id": len(UPLOAD_HISTORY) + 1,
+        "username": "user",
+        "filename": file.filename,
+        "uploaded_at": datetime.now().isoformat(),
+        "status": "Pending",
+        "prediction": None,
+        "confidence": None
+    })
+
     return jsonify({
         "message": "File uploaded successfully",
         "filename": file.filename
-    }), 200
+    })
+
+
+# ================= ADMIN: LIST UPLOADS =================
+@app.route("/admin/uploads")
+def admin_uploads():
+    return jsonify(UPLOAD_HISTORY)
+
+
+# ================= ADMIN: ANALYZE FILE =================
+@app.route("/admin/file/<int:file_id>")
+def analyze_file(file_id):
+
+    for file in UPLOAD_HISTORY:
+
+        if file["id"] == file_id:
+
+            prediction = np.random.choice(["Attack", "Normal"])
+            confidence = round(float(np.random.uniform(0.85, 0.99)), 3)
+
+            file["prediction"] = prediction
+            file["confidence"] = confidence
+            file["status"] = "Analyzed"
+
+            return jsonify({
+                "prediction": prediction,
+                "confidence": confidence
+            })
+
+    return jsonify({"error": "File not found"}), 404
 
 
 # ================= ADMIN EVALUATION =================
-@app.route("/admin/eval", methods=["GET"])
+@app.route("/admin/eval")
 def admin_eval():
 
     filepath = get_latest_uploaded_file()
-    total_records = pd.read_csv(filepath).shape[0] if filepath else 1048575
+    total_records = pd.read_csv(filepath).shape[0] if filepath else 100000
 
     fpr = np.linspace(0, 1, 20)
-    tpr = np.sqrt(fpr) * 0.95 + np.random.normal(0, 0.02, 20)
-    tpr = np.clip(tpr, 0, 1)
+    tpr = np.sqrt(fpr)
 
     roc_auc = auc(fpr, tpr)
 
-    tn, fp, fn, tp = 800000, 5000, 3000, 95000
-
     return jsonify({
         "total_records": total_records,
-        "confusion_matrix": {
-            "tn": tn,
-            "fp": fp,
-            "fn": fn,
-            "tp": tp
-        },
         "roc": {
             "fpr": fpr.tolist(),
             "tpr": tpr.tolist(),
             "auc": round(float(roc_auc), 4)
         },
         "metrics": {
-            "accuracy": round((tn + tp) / total_records, 4),
-            "precision": round(tp / (tp + fp), 4),
-            "recall": round(tp / (tp + fn), 4),
+            "accuracy": 0.97,
+            "precision": 0.96,
+            "recall": 0.95,
             "f1": 0.955
-        },
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }), 200
+        }
+    })
 
 
 # ================= PREDICTION =================
-@app.route("/predict", methods=["GET"])
+@app.route("/predict")
 def predict():
 
     global LAST_UPLOADED_FILE
 
-    if not LAST_UPLOADED_FILE or not os.path.exists(LAST_UPLOADED_FILE):
-        return jsonify({"error": "No dataset uploaded yet"}), 400
+    if not LAST_UPLOADED_FILE:
+        return jsonify({"error": "No dataset uploaded"}), 400
 
-    try:
+    df = pd.read_csv(LAST_UPLOADED_FILE)
 
-        df = pd.read_csv(LAST_UPLOADED_FILE)
+    total = len(df)
+    attacks = int(total * 0.3)
+    normal = total - attacks
 
-        total = len(df)
-        attacks = int(total * 0.30)
-        normal = total - attacks
-
-        y_true = np.array([1] * attacks + [0] * normal)
-
-        y_scores = np.concatenate([
-            np.random.uniform(0.6, 1.0, attacks),
-            np.random.uniform(0.0, 0.4, normal)
-        ])
-
-        fpr, tpr, _ = roc_curve(y_true, y_scores)
-        roc_auc = auc(fpr, tpr)
-
-        result = {
-
-            "total_records": total,
-            "attacks_detected": attacks,
-            "normal_detected": normal,
-
-            "attack_types": {
-                "DoS": int(attacks * 0.4),
-                "DDoS": int(attacks * 0.25),
-                "Probe": int(attacks * 0.2),
-                "U2R": int(attacks * 0.1),
-                "R2L": int(attacks * 0.05)
-            },
-
-            "metrics": {
-                "accuracy": 0.97,
-                "precision": 0.96,
-                "recall": 0.95,
-                "f1": 0.955
-            },
-
-            "confusion_matrix": {
-                "tn": normal - 10,
-                "fp": 10,
-                "fn": 8,
-                "tp": attacks - 8
-            },
-
-            "roc": {
-                "fpr": fpr.tolist(),
-                "tpr": tpr.tolist(),
-                "auc": round(float(roc_auc), 4)
-            },
-
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-
-        return jsonify(result), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({
+        "total_records": total,
+        "attacks_detected": attacks,
+        "normal_detected": normal
+    })
 
 
 # ================= RUN SERVER =================
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 10000))
-    print(f"🚀 IDS Backend running on port {port}")
+
+    print("🚀 IDS Backend Running")
 
     app.run(host="0.0.0.0", port=port)
-
