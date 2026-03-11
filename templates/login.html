@@ -288,19 +288,22 @@ body::after {
       <button class="role-btn" id="adminBtn" onclick="setRole('admin')">⚙️ Admin</button>
     </div>
 
-    <form id="loginForm">
-      <div class="field">
-        <label>Username</label>
-        <input id="username" placeholder="Enter username" required autocomplete="username">
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
-        <button type="button" class="eye-btn" onclick="togglePwd()">👁</button>
-      </div>
-      <button type="submit" class="btn-login">LOGIN →</button>
-    </form>
+    <form action="/login" method="POST">
 
+<div class="field">
+<label>Username</label>
+<input type="text" name="username" placeholder="Enter username" required>
+</div>
+
+<div class="field">
+<label>Password</label>
+<input type="password" name="password" placeholder="••••••••" required>
+<button type="button" class="eye-btn" onclick="togglePwd()">👁</button>
+</div>
+
+<button type="submit" class="btn-login">LOGIN →</button>
+
+</form>
     <div class="error-msg" id="errorMsg"></div>
 
     <div class="register-link" onclick="goRegister()">
@@ -329,21 +332,7 @@ function togglePwd() {
 
 function goRegister() { window.location.href = 'register.html'; }
 
-document.getElementById('loginForm').onsubmit = async e => {
-  e.preventDefault();
-  const errEl = document.getElementById('errorMsg');
-  errEl.textContent = '';
-  try {
-    const res = await fetch('http://localhost:5000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: username.value, password: password.value, role })
-    });
-    if (!res.ok) throw 0;
-    window.location.href = role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
-  } catch {
-    errEl.textContent = '✗  Invalid credentials — please try again';
-  }
+
 };
 </script>
 </body>
