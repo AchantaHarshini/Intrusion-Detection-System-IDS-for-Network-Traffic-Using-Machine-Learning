@@ -166,3 +166,10 @@ if __name__ == "__main__":
     print("🚀 IDS Backend: http://localhost:5001")
     print("✅ Endpoints: /upload → /predict → /admin/eval")
     app.run(host="0.0.0.0", port=5001, debug=True)
+    import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    print(f"🚀 IDS Backend running on port {port}")
+    app.run(host="0.0.0.0", port=port)
+
