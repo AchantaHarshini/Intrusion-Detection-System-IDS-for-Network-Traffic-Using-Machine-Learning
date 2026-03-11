@@ -544,7 +544,10 @@ function exportPDF() {
   }).save();
 }
 
-function logout() { localStorage.clear(); location.href = 'login.html'; }
+function logout() {
+  localStorage.clear();
+  window.location.href = "/";
+}
 
 show("welcome", document.getElementById("nav-welcome"));
 </script>
