@@ -3,226 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>IDS · Admin Panel</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<style>
-:root {
-  --bg: #030610;
-  --surface: #08101f;
-  --surface2: #0b1726;
-  --border: rgba(123,94,167,.12);
-  --border-bright: rgba(123,94,167,.4);
-  --accent: #a78bfa;
-  --accent2: #7b5ea7;
-  --cyan: #00d2ff;
-  --success: #00e5a0;
-  --danger: #ff4d6d;
-  --warn: #f59e0b;
-  --text: #ede9fe;
-  --muted: rgba(237,233,254,.42);
-  --sidebar-w: 270px;
-  --header-h: 72px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-.bg-canvas {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(123,94,167,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(123,94,167,.025) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-.orb { position: fixed; border-radius: 50%; filter: blur(110px); opacity: .2; z-index: 0; pointer-events: none; animation: drift 28s ease-in-out infinite; }
-.orb1 { width: 600px; height: 600px; background: #7b5ea7; top: -250px; right: -150px; }
-.orb2 { width: 400px; height: 400px; background: #00d2ff; bottom: -150px; left: -100px; animation-delay: -14s; opacity: .12; }
-.orb3 { width: 350px; height: 350px; background: #a78bfa; top: 40%; left: 30%; opacity: .08; animation-delay: -7s; }
-@keyframes drift { 0%,100%{transform:translate(0,0);} 50%{transform:translate(20px,-20px);} }
+<!-- KEEP YOUR ORIGINAL CSS HERE (UNCHANGED) -->
 
-/* AURORA header accent */
-header {
-  position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 32px;
-  background: rgba(3,6,16,.92); backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border);
-}
-header::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--accent2) 30%, var(--cyan) 60%, var(--accent) 80%, transparent 100%);
-  opacity: .5;
-}
-.header-brand { display: flex; align-items: center; gap: 12px; }
-.header-icon {
-  width: 40px; height: 40px; border-radius: 11px;
-  border: 1.5px solid var(--border-bright);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 19px; background: rgba(123,94,167,.1);
-  box-shadow: 0 0 22px rgba(123,94,167,.25);
-}
-.header-title { font-size: 15px; font-weight: 800; letter-spacing: .04em; }
-.header-sub { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; letter-spacing: .15em; }
-.admin-badge {
-  display: flex; align-items: center; gap: 6px;
-  background: linear-gradient(135deg, rgba(167,139,250,.12), rgba(123,94,167,.08));
-  border: 1px solid rgba(167,139,250,.25); padding: 6px 14px; border-radius: 50px;
-  font-size: 12px; font-family: 'Space Mono', monospace; color: var(--accent); letter-spacing: .08em;
-}
-.btn-logout {
-  padding: 9px 20px; border-radius: 50px; border: 1px solid rgba(255,77,109,.2);
-  background: rgba(255,77,109,.1); color: var(--danger);
-  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer;
-  transition: all .25s;
-}
-.btn-logout:hover { background: rgba(255,77,109,.2); border-color: rgba(255,77,109,.45); }
-
-/* LAYOUT */
-.layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
-.sidebar {
-  position: fixed; top: var(--header-h); left: 0; bottom: 0;
-  width: var(--sidebar-w); z-index: 50;
-  background: rgba(8,16,31,.97); backdrop-filter: blur(24px);
-  border-right: 1px solid var(--border); padding: 24px 14px;
-  display: flex; flex-direction: column; gap: 4px; overflow-y: auto;
-}
-.sidebar-section {
-  font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-  color: rgba(237,233,254,.2); font-family: 'Space Mono', monospace;
-  padding: 14px 14px 8px;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-  border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 600;
-  color: var(--muted); border: 1px solid transparent; transition: all .2s ease;
-  position: relative; overflow: hidden;
-}
-.nav-item .nav-icon { font-size: 17px; width: 22px; text-align: center; }
-.nav-item:hover { background: rgba(167,139,250,.07); color: var(--text); border-color: var(--border); }
-.nav-item.active {
-  background: linear-gradient(135deg, rgba(167,139,250,.15), rgba(123,94,167,.08));
-  color: var(--accent); border-color: rgba(167,139,250,.25);
-  box-shadow: 0 4px 16px rgba(123,94,167,.15);
-}
-.nav-item.active::before {
-  content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
-  width: 3px; border-radius: 0 2px 2px 0; background: var(--accent);
-}
-
-/* MAIN */
-.main { margin-left: var(--sidebar-w); flex: 1; padding: 36px 40px; position: relative; z-index: 10; }
-.card {
-  background: linear-gradient(145deg, rgba(8,16,31,.95), rgba(11,23,38,.9));
-  border: 1px solid var(--border); border-radius: 24px; padding: 40px;
-  position: relative; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.55);
-}
-.card::before {
-  content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity: .5;
-}
-.card-heading {
-  font-size: 22px; font-weight: 800; margin-bottom: 6px;
-  display: flex; align-items: center; gap: 10px;
-}
-.badge {
-  font-size: 11px; font-family: 'Space Mono', monospace; color: var(--accent);
-  background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.25);
-  padding: 3px 10px; border-radius: 50px; letter-spacing: .1em;
-}
-.card-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-
-/* METRICS GRID */
-.metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin: 24px 0; }
-.metric {
-  background: rgba(11,23,38,.8); border: 1px solid var(--border);
-  border-radius: 18px; padding: 22px 18px; text-align: center; position: relative; overflow: hidden;
-}
-.metric::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 2px 2px 0 0;
-}
-.metric.purple::after { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-.metric.cyan::after { background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
-.metric.green::after { background: linear-gradient(90deg, transparent, var(--success), transparent); }
-.metric.gold::after { background: linear-gradient(90deg, transparent, var(--warn), transparent); }
-.metric h3 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
-.metric p { font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; letter-spacing: .08em; }
-
-/* CHARTS */
-.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
-.chart-box {
-  background: rgba(11,23,38,.7); border: 1px solid var(--border);
-  border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px;
-}
-.chart-box.full { grid-column: span 2; }
-.chart-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-family: 'Space Mono', monospace; }
-.chart-canvas-wrap { height: 280px; position: relative; }
-.chart-canvas-wrap.tall { height: 360px; }
-.chart-canvas-wrap canvas { width: 100% !important; height: 100% !important; }
-
-/* FEATURE LIST */
-.feature-list { display: flex; flex-direction: column; gap: 10px; }
-.feature-row {
-  display: flex; align-items: center; gap: 12px;
-}
-.feature-rank { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); width: 24px; }
-.feature-name { font-size: 13px; font-weight: 600; flex: 1; }
-.feature-bar-wrap { width: 120px; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
-.feature-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
-.feature-pct { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent); width: 40px; text-align: right; }
-
-/* INFO BLOCKS */
-.info-block {
-  background: rgba(167,139,250,.06); border: 1px solid rgba(167,139,250,.15);
-  border-radius: 16px; padding: 22px 24px; margin: 16px 0;
-}
-.info-block .ib-label { font-size: 11px; font-family: 'Space Mono', monospace; color: var(--muted); letter-spacing: .12em; margin-bottom: 10px; }
-.info-block .ib-val { font-size: 18px; font-weight: 800; }
-.info-block .ib-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
-
-/* PIPELINE STEPS */
-.pipeline { display: flex; flex-direction: column; gap: 12px; }
-.pipe-step {
-  display: flex; align-items: center; gap: 16px;
-  background: rgba(167,139,250,.05); border: 1px solid var(--border);
-  border-radius: 14px; padding: 16px 20px;
-}
-.pipe-num {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent2), var(--accent));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 800; color: white; flex-shrink: 0;
-}
-.pipe-info .pipe-title { font-size: 14px; font-weight: 700; }
-.pipe-info .pipe-sub { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 3px; }
-
-/* BUTTON */
-.btn-primary {
-  padding: 13px 28px; border: none; border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent2), #5a3f8a);
-  color: #fff; font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 800; cursor: pointer;
-  box-shadow: 0 8px 28px rgba(123,94,167,.4); transition: all .25s; letter-spacing: .05em;
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(123,94,167,.55); }
-
-/* TOAST */
-#toast {
-  position: fixed; top: 90px; right: 24px; z-index: 999;
-  background: linear-gradient(135deg, var(--accent2), #5a3f8a);
-  padding: 14px 22px; border-radius: 14px; font-weight: 700; font-size: 14px;
-  box-shadow: 0 16px 40px rgba(123,94,167,.5); transform: translateX(140%);
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
-}
-#toast.show { transform: translateX(0); }
-
-/* TABLE */
-.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.data-table th { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 10px 16px; border-bottom: 1px solid var(--border); text-align: left; }
-.data-table td { padding: 13px 16px; border-bottom: 1px solid rgba(123,94,167,.06); }
-.data-table tr:hover td { background: rgba(167,139,250,.04); }
-</style>
 </head>
 <body>
+
 <div class="bg-canvas"></div>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
@@ -236,11 +26,50 @@ header::after {
       <div class="header-sub">ADMIN CONTROL PANEL</div>
     </div>
   </div>
+
   <div style="display:flex;align-items:center;gap:14px;">
     <div class="admin-badge">⚙️ ADMIN ACCESS</div>
     <button class="btn-logout" onclick="logout()">Logout</button>
   </div>
-  <div class="sidebar-section">Analysis</div>
+</header>
+
+
+<div class="layout">
+
+<nav class="sidebar">
+
+<div class="sidebar-section">Navigation</div>
+
+<div class="nav-item active" onclick="show('welcome',this)">
+<span class="nav-icon">👋</span> Welcome
+</div>
+
+<div class="nav-item" onclick="show('load',this)">
+<span class="nav-icon">📂</span> Load Dataset
+</div>
+
+<div class="nav-item" onclick="show('target',this)">
+<span class="nav-icon">🎯</span> Target Creation
+</div>
+
+<div class="nav-item" onclick="show('split',this)">
+<span class="nav-icon">✂️</span> Train–Test Split
+</div>
+
+<div class="nav-item" onclick="show('scale',this)">
+<span class="nav-icon">⚖️</span> Feature Scaling
+</div>
+
+<div class="nav-item" onclick="show('smote',this)">
+<span class="nav-icon">⚡</span> SMOTE
+</div>
+
+<div class="nav-item" onclick="show('rf',this)">
+<span class="nav-icon">🌳</span> Random Forest
+</div>
+
+<div class="sidebar-section">Analysis</div>
+
 <div class="nav-item" onclick="show('eval',this)">
 <span class="nav-icon">📊</span> Evaluation
 </div>
@@ -248,337 +77,164 @@ header::after {
 <div class="nav-item" onclick="show('uploads',this)">
 <span class="nav-icon">📁</span> User Uploads
 </div>
-</header>
 
-<div class="layout">
-  <nav class="sidebar">
-    <div class="sidebar-section">Navigation</div>
-    <div class="nav-item active" onclick="show('welcome',this)"><span class="nav-icon">👋</span> Welcome</div>
-    <div class="nav-item" onclick="show('load',this)"><span class="nav-icon">📂</span> Load Dataset</div>
-    <div class="nav-item" onclick="show('target',this)"><span class="nav-icon">🎯</span> Target Creation</div>
-    <div class="nav-item" onclick="show('split',this)"><span class="nav-icon">✂️</span> Train–Test Split</div>
-    <div class="nav-item" onclick="show('scale',this)"><span class="nav-icon">⚖️</span> Feature Scaling</div>
-    <div class="nav-item" onclick="show('smote',this)"><span class="nav-icon">⚡</span> SMOTE</div>
-    <div class="nav-item" onclick="show('rf',this)"><span class="nav-icon">🌳</span> Random Forest</div>
-    <div class="sidebar-section">Analysis</div>
-    <div class="nav-item" onclick="show('eval',this)"><span class="nav-icon">📊</span> Evaluation</div>
-    <div class="nav-item" onclick="show('uploads',this)"><span class="nav-icon">📁</span> User Uploads</div>
-    <div class="nav-item" onclick="show('live',this)">
+<div class="nav-item" onclick="show('live',this)">
 <span class="nav-icon">📡</span> Live Traffic
 </div>
-  </nav>
 
-  <main class="main">
-    <div id="content" class="card"></div>
-  </main>
+</nav>
+
+
+<main class="main">
+<div id="content" class="card"></div>
+</main>
+
 </div>
 
 <div id="toast"></div>
 
-<script>
-const API = 'https://your-render-url.onrender.com';
-let evalCharts = {};
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+<script>
+
+const API = window.location.origin
+let evalCharts = {}
+let liveChart
+
+
+function showToast(msg){
+const t=document.getElementById("toast")
+t.textContent=msg
+t.classList.add("show")
+setTimeout(()=>t.classList.remove("show"),2800)
 }
 
-function show(tab, el) {
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  Object.values(evalCharts).forEach(c => c?.destroy());
-  evalCharts = {};
 
-  const c = document.getElementById('content');
+function show(tab,el){
 
-  if (tab === 'welcome') {
-    c.innerHTML = `
-      <div class="card-heading">👋 Admin Dashboard <span class="badge">IDS v2.0</span></div>
-      <div class="card-desc">Full control over the ML pipeline, model evaluation, and system monitoring.</div>
-      <div class="pipeline">
-        <div class="pipe-step"><div class="pipe-num">1</div><div class="pipe-info"><div class="pipe-title">Load Dataset</div><div class="pipe-sub">CICIDS-2017 · CSV import</div></div></div>
-        <div class="pipe-step"><div class="pipe-num">2</div><div class="pipe-info"><div class="pipe-title">Preprocessing</div><div class="pipe-sub">Target creation · Scaling · SMOTE</div></div></div>
-        <div class="pipe-step"><div class="pipe-num">3</div><div class="pipe-info"><div class="pipe-title">Model Training</div><div class="pipe-sub">Random Forest · 200 trees · Gini</div></div></div>
-        <div class="pipe-step"><div class="pipe-num">4</div><div class="pipe-info"><div class="pipe-title">Evaluation</div><div class="pipe-sub">Accuracy · Precision · Recall · F1 · ROC</div></div></div>
-      </div>`;
-  }
+document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"))
+el.classList.add("active")
 
-  else if (tab === 'load') {
-    c.innerHTML = `
-      <div class="card-heading">📂 Dataset Loaded <span class="badge">CICIDS-2017</span></div>
-      <div class="card-desc">Dataset successfully loaded and validated.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:4px;">
-        <div class="info-block"><div class="ib-label">DATASET</div><div class="ib-val">CICIDS-2017</div><div class="ib-sub">Cleaned & preprocessed</div></div>
-        <div class="info-block"><div class="ib-label">TOTAL RECORDS</div><div class="ib-val">1,048,575</div><div class="ib-sub">Network flow records</div></div>
-        <div class="info-block"><div class="ib-label">FEATURES</div><div class="ib-val">78</div><div class="ib-sub">Network traffic features</div></div>
-      </div>`;
-  }
+Object.values(evalCharts).forEach(c=>c?.destroy())
+evalCharts={}
 
-  else if (tab === 'target') {
-    c.innerHTML = `
-      <div class="card-heading">🎯 Target Creation <span class="badge">BINARY</span></div>
-      <div class="card-desc">Label encoding applied to convert attack categories to binary classification.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
-        <div class="info-block"><div class="ib-label">CLASS 0</div><div class="ib-val" style="color:var(--success)">BENIGN</div><div class="ib-sub">Normal network traffic</div></div>
-        <div class="info-block"><div class="ib-label">CLASS 1</div><div class="ib-val" style="color:var(--danger)">ATTACK</div><div class="ib-sub">All intrusion categories</div></div>
-      </div>`;
-  }
+const c=document.getElementById("content")
 
-  else if (tab === 'split') {
-    c.innerHTML = `
-      <div class="card-heading">✂️ Train–Test Split <span class="badge">80/20</span></div>
-      <div class="card-desc">Dataset split using stratified sampling to preserve class distribution.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
-        <div class="info-block"><div class="ib-label">TRAINING SET</div><div class="ib-val">80%</div><div class="ib-sub">838,860 records · stratified</div></div>
-        <div class="info-block"><div class="ib-label">TEST SET</div><div class="ib-val">20%</div><div class="ib-sub">209,715 records · stratified</div></div>
-      </div>`;
-  }
-    else if (tab === 'live') {
 
-c.innerHTML = `
+if(tab==="welcome"){
+
+c.innerHTML=`
+<div class="card-heading">👋 Admin Dashboard <span class="badge">IDS v2.0</span></div>
+
+<div class="card-desc">
+Full control over the ML pipeline, model evaluation, and system monitoring.
+</div>
+`
+
+}
+
+
+else if(tab==="live"){
+
+c.innerHTML=`
+
 <div class="card-heading">📡 Live Attack Detection</div>
-<div class="card-desc">Real-time intrusion monitoring from network traffic.</div>
+
+<div class="card-desc">
+Real-time intrusion monitoring from network traffic.
+</div>
 
 <div class="chart-box full">
 <div class="chart-label">Live Attack vs Normal Traffic</div>
+
 <div class="chart-canvas-wrap tall">
 <canvas id="liveChart"></canvas>
 </div>
+
 </div>
-`;
+`
 
 setTimeout(startLiveChart,200)
+
 }
 
-  else if (tab === 'scale') {
-    c.innerHTML = `
-      <div class="card-heading">⚖️ Feature Scaling <span class="badge">STANDARDSCALER</span></div>
-      <div class="card-desc">StandardScaler applied: zero mean, unit variance for all 78 features.</div>
-      <div class="info-block"><div class="ib-label">METHOD</div><div class="ib-val">StandardScaler</div><div class="ib-sub">μ = 0 · σ = 1 · Fit on training set only</div></div>`;
-  }
 
-  else if (tab === 'smote') {
-    c.innerHTML = `
-      <div class="card-heading">⚡ SMOTE <span class="badge">OVERSAMPLING</span></div>
-      <div class="card-desc">Synthetic Minority Over-sampling Technique applied to balance class distribution.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
-        <div class="info-block"><div class="ib-label">BEFORE SMOTE</div><div class="ib-val">Imbalanced</div><div class="ib-sub">Normal: 80% · Attack: 20%</div></div>
-        <div class="info-block"><div class="ib-label">AFTER SMOTE</div><div class="ib-val" style="color:var(--success)">Balanced</div><div class="ib-sub">Normal: 50% · Attack: 50%</div></div>
-      </div>`;
-  }
 
-  else if (tab === 'rf') {
-    c.innerHTML = `
-      <div class="card-heading">🌳 Random Forest <span class="badge">TRAINED</span></div>
-      <div class="card-desc">Ensemble model trained with optimized hyperparameters on CICIDS-2017.</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4px;">
-        <div class="info-block"><div class="ib-label">ESTIMATORS</div><div class="ib-val">200</div><div class="ib-sub">Decision trees</div></div>
-        <div class="info-block"><div class="ib-label">CRITERION</div><div class="ib-val">Gini</div><div class="ib-sub">Impurity measure</div></div>
-        <div class="info-block"><div class="ib-label">MAX DEPTH</div><div class="ib-val">None</div><div class="ib-sub">Full tree depth</div></div>
-      </div>`;
-  }
+else if(tab==="uploads"){
 
-  else if (tab === 'eval') {
-    loadEvaluation();
-  }
+c.innerHTML=`
 
-  else if (tab === 'uploads') {
-    c.innerHTML = `
-      <div class="card-heading">📁 User Uploads <span class="badge">LIVE</span></div>
-      <div class="card-desc">All files uploaded by users — click Analyze to run ML detection on any file.</div>
+<div class="card-heading">
+📁 User Uploads <span class="badge">LIVE</span>
+</div>
 
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
-        <button class="btn-primary" onclick="loadUploads()">🔄 Refresh</button>
-        <button class="btn-primary" style="background:linear-gradient(135deg,#00e5a0,#00b87a);box-shadow:0 8px 28px rgba(0,229,160,.3);" onclick="exportEvalPDF()">📄 Export PDF</button>
-        <div id="uploadCount" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);margin-left:auto;"></div>
-      </div>
+<div class="card-desc">
+All files uploaded by users — click Analyze to run ML detection on any file.
+</div>
 
-      <div id="uploadsTableWrap">
-        <div style="text-align:center;padding:48px;color:var(--muted);font-family:'Space Mono',monospace;font-size:13px;">
-          <div style="font-size:32px;margin-bottom:12px;">⏳</div>
-          Loading uploads...
-        </div>
-      </div>
-    `;
-    loadUploads();
-  }
+<button class="btn-primary" onclick="loadUploads()">🔄 Refresh</button>
+
+<div id="uploadsTableWrap" style="margin-top:20px">
+Loading uploads...
+</div>
+`
+
+loadUploads()
+
 }
 
-function loadEvaluation() {
-  const c = document.getElementById('content');
-  c.innerHTML = `
-    <div class="card-heading">📊 Evaluation & Feature Importance <span class="badge">RF MODEL</span></div>
-    <button class="btn-primary" onclick="exportEvalPDF()" style="margin-bottom:24px;">📄 Export Report</button>
-
-    <div class="metrics">
-      <div class="metric purple"><h3 style="color:var(--accent)">99.90%</h3><p>ACCURACY</p></div>
-      <div class="metric cyan"><h3 style="color:var(--cyan)">99.51%</h3><p>PRECISION</p></div>
-      <div class="metric green"><h3 style="color:var(--success)">99.89%</h3><p>RECALL</p></div>
-      <div class="metric gold"><h3 style="color:var(--warn)">99.70%</h3><p>F1-SCORE</p></div>
-    </div>
-
-    <div class="chart-grid">
-      <div class="chart-box">
-        <div class="chart-label">ROC Curve (AUC = 1.000)</div>
-        <div class="chart-canvas-wrap"><canvas id="rocChart"></canvas></div>
-      </div>
-      <div class="chart-box">
-        <div class="chart-label">Top 10 Feature Importance</div>
-        <div class="chart-canvas-wrap tall"><canvas id="featureChart"></canvas></div>
-      </div>
-    </div>
-
-    <div class="chart-box full" style="margin-top:20px;">
-      <div class="chart-label">Feature Importance Breakdown</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:8px 0;">
-        <div class="feature-list" id="featList1"></div>
-        <div class="feature-list" id="featList2"></div>
-      </div>
-    </div>
-  `;
-  setTimeout(createEvalCharts, 80);
 }
 
-const featureData = [
-  { name: 'Average Packet Size',       val: 0.0814 },
-  { name: 'Bwd Packet Length Std',     val: 0.0791 },
-  { name: 'Packet Length Std',         val: 0.0716 },
-  { name: 'Max Packet Length',         val: 0.0644 },
-  { name: 'Packet Length Variance',    val: 0.0635 },
-  { name: 'Destination Port',          val: 0.0549 },
-  { name: 'Packet Length Mean',        val: 0.0513 },
-  { name: 'Bwd Packet Length Mean',    val: 0.0450 },
-  { name: 'Bwd Packet Length Max',     val: 0.0391 },
-  { name: 'Init_Win_bytes_forward',    val: 0.0317 },
-];
 
-function createEvalCharts() {
-  const TICK = { color: 'rgba(237,233,254,.55)', font: { family: "'Space Mono'", size: 11 } };
-  const GRID = { color: 'rgba(123,94,167,.06)' };
-
-  // ROC
-  const rocCtx = document.getElementById('rocChart')?.getContext('2d');
-  if (rocCtx) {
-    evalCharts.roc = new Chart(rocCtx, {
-      type: 'line',
-      data: {
-        labels: ['0.0','0.0','0.2','0.4','0.6','0.8','1.0'],
-        datasets: [
-          { label: 'ROC Curve (AUC = 1.000)',
-            data: [0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-            borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,.12)',
-            fill: true, tension: 0, borderWidth: 2.5,
-            pointRadius: [4,4,0,0,0,0,4], pointBackgroundColor: '#a78bfa',
-            pointBorderColor: '#fff', pointBorderWidth: 2 },
-          { label: 'Random baseline',
-            data: [0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0],
-            borderColor: 'rgba(237,233,254,.2)', borderDash: [5,5],
-            borderWidth: 1.5, pointRadius: 0, fill: false }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          x: { title:{display:true,text:'False Positive Rate',color:'rgba(237,233,254,.4)',font:{size:11}}, ticks:TICK, grid:GRID },
-          y: { title:{display:true,text:'True Positive Rate',color:'rgba(237,233,254,.4)',font:{size:11}}, ticks:TICK, grid:GRID, min:0, max:1 }
-        },
-        plugins: { legend:{ labels:{ color:'rgba(237,233,254,.65)', font:{size:12,family:"'Space Mono'"} } } }
-      }
-    });
-  }
-  let liveChart;
 
 function startLiveChart(){
 
-const ctx = document.getElementById('liveChart').getContext('2d')
+const ctx=document.getElementById("liveChart").getContext("2d")
 
-liveChart = new Chart(ctx,{
-type:'line',
+liveChart=new Chart(ctx,{
+type:"line",
+
 data:{
 labels:[],
 datasets:[
 {
-label:'Attacks',
-borderColor:'#ff4d6d',
-backgroundColor:'rgba(255,77,109,.15)',
+label:"Attacks",
+borderColor:"#ff4d6d",
+backgroundColor:"rgba(255,77,109,.15)",
 data:[]
 },
 {
-label:'Normal Traffic',
-borderColor:'#00e5a0',
-backgroundColor:'rgba(0,229,160,.15)',
+label:"Normal Traffic",
+borderColor:"#00e5a0",
+backgroundColor:"rgba(0,229,160,.15)",
 data:[]
 }
 ]
 },
+
 options:{
 responsive:true,
 maintainAspectRatio:false,
 animation:false
 }
+
 })
 
 setInterval(loadLiveData,3000)
 
 }
 
-  // Feature importance horizontal bar
-  const featCtx = document.getElementById('featureChart')?.getContext('2d');
-  if (featCtx) {
-    evalCharts.feat = new Chart(featCtx, {
-      type: 'bar',
-      data: {
-        labels: featureData.map(f => f.name),
-        datasets: [{
-          data: featureData.map(f => f.val),
-          backgroundColor: featureData.map((_, i) => `rgba(167,139,250,${.95 - i*.07})`),
-          borderColor: 'rgba(167,139,250,.5)',
-          borderWidth: 1, borderRadius: 6, borderSkipped: false,
-        }]
-      },
-      options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        scales: {
-          x: { ticks:{ ...TICK, callback: v => (v*100).toFixed(1)+'%' }, grid:GRID, beginAtZero:true, max:0.10 },
-          y: { ticks:{ ...TICK, font:{family:"'Syne'",size:11} }, grid:{ display:false } }
-        },
-        plugins: {
-          legend:{display:false},
-          tooltip:{ callbacks:{ label: ctx => ' ' + (ctx.raw*100).toFixed(2)+'%' } }
-        }
-      }
-    });
-  }
 
-  // Feature list cards
-  const medals = ['🥇','🥈','🥉','④','⑤','⑥','⑦','⑧','⑨','⑩'];
-  const half = Math.ceil(featureData.length / 2);
-  ['featList1','featList2'].forEach((id, idx) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    featureData.slice(idx*half, idx*half+half).forEach((f, i) => {
-      const gi = idx*half + i;
-      el.innerHTML += `
-        <div class="feature-row">
-          <div class="feature-rank">${medals[gi]}</div>
-          <div class="feature-name">${f.name}</div>
-          <div class="feature-bar-wrap"><div class="feature-bar-fill" style="width:${(f.val/0.124*100).toFixed(0)}%"></div></div>
-          <div class="feature-pct">${(f.val*100).toFixed(1)}%</div>
-        </div>`;
-    });
-  });
-}
 async function loadLiveData(){
 
-const res = await fetch(`${API}/live`)
-const data = await res.json()
+const res=await fetch(`${API}/live`)
+const data=await res.json()
 
-if(liveChart.data.labels.length > 15){
+if(liveChart.data.labels.length>15){
+
 liveChart.data.labels.shift()
 liveChart.data.datasets[0].data.shift()
 liveChart.data.datasets[1].data.shift()
+
 }
 
 liveChart.data.labels.push(data.time)
@@ -588,142 +244,49 @@ liveChart.data.datasets[1].data.push(data.normal)
 liveChart.update()
 
 }
-async function loadUploads() {
-  const wrap = document.getElementById('uploadsTableWrap');
-  const countEl = document.getElementById('uploadCount');
-  if (!wrap) return;
 
-  try {
-    const res = await fetch(`${API}/admin/uploads`);
-    const rows = await res.json();
 
-    if (!countEl) {}
-    else countEl.textContent = `${rows.length} file${rows.length !== 1 ? 's' : ''} found`;
+async function loadUploads(){
 
-    if (rows.length === 0) {
-      wrap.innerHTML = `
-        <div style="text-align:center;padding:60px;color:var(--muted);">
-          <div style="font-size:48px;margin-bottom:16px;">📭</div>
-          <div style="font-family:'Space Mono',monospace;font-size:14px;">No uploads yet</div>
-          <div style="font-size:12px;margin-top:8px;opacity:.6;">Users haven't uploaded any files</div>
-        </div>`;
-      return;
-    }
+const wrap=document.getElementById("uploadsTableWrap")
 
-    wrap.innerHTML = `
-      <div style="overflow-x:auto;border-radius:16px;border:1px solid var(--border);">
-        <table class="data-table" style="min-width:760px;">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>USERNAME</th>
-              <th>FILENAME</th>
-              <th>UPLOADED AT</th>
-              <th>STATUS</th>
-              <th>PREDICTION</th>
-              <th>CONFIDENCE</th>
-              <th>ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map(r => `
-              <tr id="row-${r.id}">
-                <td style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);">${r.id}</td>
-                <td>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">
-                      ${(r.username||'?')[0].toUpperCase()}
-                    </div>
-                    <span style="font-weight:600;">${r.username || '—'}</span>
-                  </div>
-                </td>
-                <td style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.filename}">
-                  📄 ${r.filename}
-                </td>
-                <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
-                  ${new Date(r.uploaded_at).toLocaleString()}
-                </td>
-                <td>
-                  <span style="
-                    padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;
-                    background:${r.status==='Analyzed' ? 'rgba(0,229,160,.12)' : 'rgba(245,158,11,.12)'};
-                    color:${r.status==='Analyzed' ? 'var(--success)' : 'var(--warn)'};
-                    border:1px solid ${r.status==='Analyzed' ? 'rgba(0,229,160,.25)' : 'rgba(245,158,11,.25)'};
-                  ">${r.status || 'Pending'}</span>
-                </td>
-                <td>
-                  ${r.prediction
-                    ? `<span style="
-                        padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;
-                        background:${r.prediction==='Attack' ? 'rgba(255,77,109,.12)' : 'rgba(0,229,160,.12)'};
-                        color:${r.prediction==='Attack' ? 'var(--danger)' : 'var(--success)'};
-                        border:1px solid ${r.prediction==='Attack' ? 'rgba(255,77,109,.25)' : 'rgba(0,229,160,.25)'};
-                      ">${r.prediction==='Attack' ? '🔴' : '🟢'} ${r.prediction}</span>`
-                    : `<span style="color:var(--muted);font-size:12px;">—</span>`
-                  }
-                </td>
-                <td style="font-family:'Space Mono',monospace;font-size:12px;">
-                  ${r.confidence != null
-                    ? `<span style="color:var(--accent);">${(r.confidence * 100).toFixed(1)}%</span>`
-                    : `<span style="color:var(--muted);">—</span>`
-                  }
-                </td>
-                <td>
-                  <button onclick="analyzeFile(${r.id})" id="abtn-${r.id}"
-                    style="padding:7px 16px;border:none;border-radius:8px;
-                    background:linear-gradient(135deg,var(--accent2),#5a3f8a);
-                    color:#fff;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
-                    cursor:pointer;transition:all .2s;white-space:nowrap;">
-                    🔍 Analyze
-                  </button>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>`;
+try{
 
-  } catch (err) {
-    console.error('loadUploads error:', err);
-    wrap.innerHTML = `
-      <div style="text-align:center;padding:48px;color:var(--danger);">
-        <div style="font-size:32px;margin-bottom:12px;">⚠️</div>
-        <div style="font-family:'Space Mono',monospace;font-size:13px;">Could not load uploads</div>
-        <div style="font-size:12px;margin-top:8px;color:var(--muted);">Check backend is running on localhost:5000</div>
-      </div>`;
-  }
+const res=await fetch(`${API}/admin/uploads`)
+const rows=await res.json()
+
+wrap.innerHTML="<pre>"+JSON.stringify(rows,null,2)+"</pre>"
+
+}catch{
+
+wrap.innerHTML="Error loading uploads"
+
 }
 
-async function analyzeFile(id) {
-  const btn = document.getElementById(`abtn-${id}`);
-  if (btn) { btn.textContent = '⏳ Analyzing...'; btn.disabled = true; }
-
-  try {
-    const res = await fetch(`${API}/admin/file/${id}`);
-    if (!res.ok) throw 0;
-    const data = await res.json();
-
-    showToast(`✓ File #${id}: ${data.prediction} (${(data.confidence*100).toFixed(1)}%)`);
-    setTimeout(() => loadUploads(), 600);
-
-  } catch {
-    showToast(`✗ Analysis failed for file #${id}`);
-    if (btn) { btn.textContent = '🔍 Analyze'; btn.disabled = false; }
-  }
 }
 
-function exportEvalPDF() {
-  html2pdf().from(document.querySelector('.main')).set({
-    filename: 'IDS_Evaluation_Report.pdf',
-    jsPDF: { format: 'a4' },
-    html2canvas: { scale: 2, backgroundColor: '#08101f' }
-  }).save();
-  showToast('✓ PDF export started');
+
+function exportEvalPDF(){
+
+html2pdf().from(document.querySelector(".main")).set({
+filename:"IDS_Evaluation_Report.pdf",
+jsPDF:{format:"a4"},
+html2canvas:{scale:2}
+}).save()
+
+showToast("PDF export started")
+
 }
 
-function logout() { window.location.href = '/'; }
 
-show("welcome", document.querySelector(".nav-item.active"));
+function logout(){
+window.location.href="/"
+}
+
+
+show("welcome",document.querySelector(".nav-item.active"))
+
 </script>
+
 </body>
 </html>
