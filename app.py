@@ -38,12 +38,13 @@ def get_latest_uploaded_file():
 def home():
     return render_template("login.html")
 
-@app.route("/register")
-def register_page():
-    return render_template("register.html")
+
 # ================= REGISTER =================
-@app.route("/register", methods=["POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
+
+    if request.method == "GET":
+        return render_template("register.html")
 
     username = request.form.get("username")
     password = request.form.get("password")
@@ -93,8 +94,6 @@ def upload():
 
     LAST_UPLOADED_FILE = filepath
 
-    print("✅ FILE RECEIVED:", filepath)
-
     return jsonify({
         "message": "File uploaded successfully",
         "filename": file.filename
@@ -124,9 +123,9 @@ def admin_eval():
             "auc": round(float(roc_auc), 4)
         },
         "metrics": {
-            "accuracy": round((tn+tp)/total_records, 4),
-            "precision": round(tp/(tp+fp), 4),
-            "recall": round(tp/(tp+fn), 4),
+            "accuracy": round((tn + tp) / total_records, 4),
+            "precision": round(tp / (tp + fp), 4),
+            "recall": round(tp / (tp + fn), 4),
             "f1": 0.955
         },
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -150,7 +149,7 @@ def predict():
         attacks = int(total * 0.30)
         normal = total - attacks
 
-        y_true = np.array([1]*attacks + [0]*normal)
+        y_true = np.array([1] * attacks + [0] * normal)
 
         y_scores = np.concatenate([
             np.random.uniform(0.6, 1.0, attacks),
@@ -197,14 +196,9 @@ def predict():
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
-        print("✅ Prediction generated")
-
         return jsonify(result), 200
 
     except Exception as e:
-
-        print("❌ ERROR:", str(e))
-
         return jsonify({"error": str(e)}), 500
 
 
@@ -212,8 +206,6 @@ def predict():
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 10000))
-
     print(f"🚀 IDS Backend running on port {port}")
 
     app.run(host="0.0.0.0", port=port)
-
