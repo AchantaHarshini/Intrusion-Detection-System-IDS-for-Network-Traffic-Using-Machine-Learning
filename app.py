@@ -23,7 +23,6 @@ if not os.path.exists(USERS_FILE):
 LAST_UPLOADED_FILE = None
 UPLOAD_HISTORY = []
 
-
 # ================= GET LATEST FILE =================
 def get_latest_uploaded_file():
     files = [
@@ -99,6 +98,9 @@ def upload():
 
     file = request.files["file"]
 
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
 
@@ -155,7 +157,11 @@ def analyze_file(file_id):
 def admin_eval():
 
     filepath = get_latest_uploaded_file()
-    total_records = pd.read_csv(filepath).shape[0] if filepath else 100000
+
+    try:
+        total_records = pd.read_csv(filepath).shape[0] if filepath else 100000
+    except:
+        total_records = 100000
 
     fpr = np.linspace(0, 1, 20)
     tpr = np.sqrt(fpr)
@@ -163,7 +169,7 @@ def admin_eval():
     roc_auc = auc(fpr, tpr)
 
     return jsonify({
-        "total_records": total_records,
+        "total_records": int(total_records),
         "roc": {
             "fpr": fpr.tolist(),
             "tpr": tpr.tolist(),
@@ -178,7 +184,6 @@ def admin_eval():
     })
 
 
-# ================= PREDICTION =================
 # ================= LIVE TRAFFIC STREAM =================
 @app.route("/live")
 def live_traffic():
@@ -191,6 +196,9 @@ def live_traffic():
         "attacks": int(attacks),
         "normal": int(normal)
     })
+
+
+# ================= PREDICTION =================
 @app.route("/predict")
 def predict():
 
@@ -199,16 +207,19 @@ def predict():
     if not LAST_UPLOADED_FILE:
         return jsonify({"error": "No dataset uploaded"}), 400
 
-    df = pd.read_csv(LAST_UPLOADED_FILE)
+    try:
+        df = pd.read_csv(LAST_UPLOADED_FILE)
+    except:
+        return jsonify({"error": "Failed to read dataset"}), 500
 
     total = len(df)
     attacks = int(total * 0.3)
     normal = total - attacks
 
     return jsonify({
-        "total_records": total,
-        "attacks_detected": attacks,
-        "normal_detected": normal
+        "total_records": int(total),
+        "attacks_detected": int(attacks),
+        "normal_detected": int(normal)
     })
 
 
@@ -220,4 +231,3 @@ if __name__ == "__main__":
     print("🚀 IDS Backend Running")
 
     app.run(host="0.0.0.0", port=port)
-
