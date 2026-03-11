@@ -49,6 +49,9 @@ def register():
     username = request.form.get("username")
     password = request.form.get("password")
 
+    if not username or not password:
+        return render_template("register.html", error="Invalid input")
+
     with open(USERS_FILE, "r") as f:
         users = json.load(f)
 
@@ -70,6 +73,11 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
 
+    # ===== ADMIN LOGIN (backend only) =====
+    if username == "admin" and password == "admin123":
+        return render_template("admin-dashboard.html")
+
+    # ===== USER LOGIN =====
     with open(USERS_FILE, "r") as f:
         users = json.load(f)
 
@@ -110,13 +118,19 @@ def admin_eval():
     fpr = np.linspace(0, 1, 20)
     tpr = np.sqrt(fpr) * 0.95 + np.random.normal(0, 0.02, 20)
     tpr = np.clip(tpr, 0, 1)
+
     roc_auc = auc(fpr, tpr)
 
     tn, fp, fn, tp = 800000, 5000, 3000, 95000
 
     return jsonify({
         "total_records": total_records,
-        "confusion_matrix": {"tn": tn, "fp": fp, "fn": fn, "tp": tp},
+        "confusion_matrix": {
+            "tn": tn,
+            "fp": fp,
+            "fn": fn,
+            "tp": tp
+        },
         "roc": {
             "fpr": fpr.tolist(),
             "tpr": tpr.tolist(),
