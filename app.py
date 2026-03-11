@@ -25,8 +25,7 @@ def get_latest_uploaded_file():
 # ================= HOME =================
 @app.route("/")
 def home():
-    return "IDS Flask Backend OK | Admin: /admin/eval"
-
+    return render_template("login.html")
 # ================= UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -172,5 +171,6 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     print(f"🚀 IDS Backend running on port {port}")
     app.run(host="0.0.0.0", port=port)
+
 
 
