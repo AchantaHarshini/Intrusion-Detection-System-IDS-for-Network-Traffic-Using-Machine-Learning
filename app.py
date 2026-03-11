@@ -7,7 +7,7 @@ from datetime import datetime
 from sklearn.metrics import roc_curve, auc, confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 import joblib
-
+from flask import Flask, request, jsonify, render_template
 app = Flask(__name__)
 CORS(app)
 
@@ -171,6 +171,7 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     print(f"🚀 IDS Backend running on port {port}")
     app.run(host="0.0.0.0", port=port)
+
 
 
 
