@@ -240,6 +240,14 @@ header::after {
     <div class="admin-badge">⚙️ ADMIN ACCESS</div>
     <button class="btn-logout" onclick="logout()">Logout</button>
   </div>
+  <div class="sidebar-section">Analysis</div>
+<div class="nav-item" onclick="show('eval',this)">
+<span class="nav-icon">📊</span> Evaluation
+</div>
+
+<div class="nav-item" onclick="show('uploads',this)">
+<span class="nav-icon">📁</span> User Uploads
+</div>
 </header>
 
 <div class="layout">
@@ -255,6 +263,9 @@ header::after {
     <div class="sidebar-section">Analysis</div>
     <div class="nav-item" onclick="show('eval',this)"><span class="nav-icon">📊</span> Evaluation</div>
     <div class="nav-item" onclick="show('uploads',this)"><span class="nav-icon">📁</span> User Uploads</div>
+    <div class="nav-item" onclick="show('live',this)">
+<span class="nav-icon">📡</span> Live Traffic
+</div>
   </nav>
 
   <main class="main">
@@ -324,6 +335,22 @@ function show(tab, el) {
         <div class="info-block"><div class="ib-label">TEST SET</div><div class="ib-val">20%</div><div class="ib-sub">209,715 records · stratified</div></div>
       </div>`;
   }
+    else if (tab === 'live') {
+
+c.innerHTML = `
+<div class="card-heading">📡 Live Attack Detection</div>
+<div class="card-desc">Real-time intrusion monitoring from network traffic.</div>
+
+<div class="chart-box full">
+<div class="chart-label">Live Attack vs Normal Traffic</div>
+<div class="chart-canvas-wrap tall">
+<canvas id="liveChart"></canvas>
+</div>
+</div>
+`;
+
+setTimeout(startLiveChart,200)
+}
 
   else if (tab === 'scale') {
     c.innerHTML = `
@@ -461,6 +488,41 @@ function createEvalCharts() {
       }
     });
   }
+  let liveChart;
+
+function startLiveChart(){
+
+const ctx = document.getElementById('liveChart').getContext('2d')
+
+liveChart = new Chart(ctx,{
+type:'line',
+data:{
+labels:[],
+datasets:[
+{
+label:'Attacks',
+borderColor:'#ff4d6d',
+backgroundColor:'rgba(255,77,109,.15)',
+data:[]
+},
+{
+label:'Normal Traffic',
+borderColor:'#00e5a0',
+backgroundColor:'rgba(0,229,160,.15)',
+data:[]
+}
+]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+animation:false
+}
+})
+
+setInterval(loadLiveData,3000)
+
+}
 
   // Feature importance horizontal bar
   const featCtx = document.getElementById('featureChart')?.getContext('2d');
@@ -508,7 +570,24 @@ function createEvalCharts() {
     });
   });
 }
+async function loadLiveData(){
 
+const res = await fetch(`${API}/live`)
+const data = await res.json()
+
+if(liveChart.data.labels.length > 15){
+liveChart.data.labels.shift()
+liveChart.data.datasets[0].data.shift()
+liveChart.data.datasets[1].data.shift()
+}
+
+liveChart.data.labels.push(data.time)
+liveChart.data.datasets[0].data.push(data.attacks)
+liveChart.data.datasets[1].data.push(data.normal)
+
+liveChart.update()
+
+}
 async function loadUploads() {
   const wrap = document.getElementById('uploadsTableWrap');
   const countEl = document.getElementById('uploadCount');
