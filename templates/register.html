@@ -327,20 +327,20 @@ body::after {
     <div class="card-title">Create account</div>
     <div class="card-sub">// NEW_USER · REGISTER</div>
 
-    <form id="registerForm">
+    <form action="/register" method="POST">
       <div class="field">
         <label>Username</label>
-        <input id="username" name="username" placeholder="Choose a username" required autocomplete="username">
+        <input id="username" name="username" placeholder="Choose a username" required>
       </div>
       <div class="field">
         <label>Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" required>
+        <input type="password" id="password" name="password" required>
         <button type="button" class="eye-btn" onclick="togglePwd('password')">👁</button>
         <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
       </div>
       <div class="field">
         <label>Confirm Password</label>
-        <input type="password" id="confirm" name="confirm_password" placeholder="••••••••" required>
+        <input type="password" id="confirm" name="confirm_password" required>
         <button type="button" class="eye-btn" onclick="togglePwd('confirm')">👁</button>
       </div>
       <button type="submit" class="btn-register" id="submitBtn" disabled>CREATE ACCOUNT →</button>
@@ -493,30 +493,20 @@ cfmEl.addEventListener('input', checkMatch);
 
 document.getElementById('registerForm').onsubmit = async e => {
   e.preventDefault();
-
-  errEl.textContent = '';
-  okEl.textContent = '';
-
-  const formData = new FormData();
-  formData.append("username", username.value.trim());
-  formData.append("password", pwdEl.value.trim());
-
+  errEl.textContent = ''; okEl.textContent = '';
   try {
     const res = await fetch('/register', {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username.value.trim(), password: pwdEl.value.trim(), role: 'user' })
     });
-
     if (!res.ok) throw 0;
-
-    okEl.textContent = '✓ Account created — redirecting...';
-
+    okEl.textContent = '✓  Account created — redirecting...';
     setTimeout(() => window.location.href = '/', 1200);
-
   } catch {
-    errEl.textContent = '✗ Username already exists';
+    errEl.textContent = '✗  Username already exists';
   }
-};
+};;
 </script>
 </body>
 </html>
