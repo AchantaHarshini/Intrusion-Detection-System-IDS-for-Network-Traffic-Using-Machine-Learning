@@ -179,6 +179,18 @@ def admin_eval():
 
 
 # ================= PREDICTION =================
+# ================= LIVE TRAFFIC STREAM =================
+@app.route("/live")
+def live_traffic():
+
+    attacks = np.random.randint(10, 80)
+    normal = np.random.randint(100, 400)
+
+    return jsonify({
+        "time": datetime.now().strftime("%H:%M:%S"),
+        "attacks": int(attacks),
+        "normal": int(normal)
+    })
 @app.route("/predict")
 def predict():
 
@@ -208,3 +220,4 @@ if __name__ == "__main__":
     print("🚀 IDS Backend Running")
 
     app.run(host="0.0.0.0", port=port)
+
