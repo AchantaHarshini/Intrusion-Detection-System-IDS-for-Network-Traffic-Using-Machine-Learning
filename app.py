@@ -7,6 +7,7 @@ from datetime import datetime
 from sklearn.metrics import roc_curve, auc
 from sklearn.ensemble import RandomForestClassifier
 import joblib
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -28,6 +29,24 @@ def get_latest_uploaded_file():
 @app.route("/")
 def home():
     return render_template("login.html")
+    @app.route("/register", methods=["POST"])
+def register():
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    with open(USERS_FILE, "r") as f:
+        users = json.load(f)
+
+    if username in users:
+        return render_template("register.html", error="User already exists")
+
+    users[username] = password
+
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f)
+
+    return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -35,15 +54,13 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    # Simple demo authentication
-    if username == "admin" and password == "admin":
-        return render_template("admin-dashboard.html")
+    with open(USERS_FILE, "r") as f:
+        users = json.load(f)
 
-    elif username == "user" and password == "user":
+    if username in users and users[username] == password:
         return render_template("user-dashboard.html")
 
-    else:
-        return render_template("login.html", error="Invalid Credentials")
+    return render_template("login.html", error="Invalid Credentials")
 # ================= FILE UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -205,5 +222,6 @@ if __name__ == "__main__":
     print(f"🚀 IDS Backend running on port {port}")
 
     app.run(host="0.0.0.0", port=port, debug=False)
+
 
 
