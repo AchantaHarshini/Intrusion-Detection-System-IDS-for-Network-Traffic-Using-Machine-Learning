@@ -265,7 +265,7 @@ header::after {
 <div id="toast"></div>
 
 <script>
-const API = 'http://localhost:5000';
+const API = 'https://your-render-url.onrender.com';
 let evalCharts = {};
 
 function showToast(msg) {
@@ -642,7 +642,7 @@ function exportEvalPDF() {
   showToast('✓ PDF export started');
 }
 
-function logout() { localStorage.clear(); location.href = 'login.html'; }
+function logout() { window.location.href = '/'; }
 
 show("welcome", document.querySelector(".nav-item.active"));
 </script>
