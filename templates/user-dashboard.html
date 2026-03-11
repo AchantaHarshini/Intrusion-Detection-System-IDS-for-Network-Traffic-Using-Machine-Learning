@@ -283,7 +283,7 @@ header {
 
 <script>
 Chart.register(ChartDataLabels);
-const API = "http://localhost:5000";
+const API = window.location.origin;
 let predictionData = null;
 let charts = {};
 
@@ -425,7 +425,7 @@ async function uploadFile() {
     enable("nav-detect");
     show("detect", document.getElementById("nav-detect"));
   } catch {
-    alert('Upload failed. Check backend on localhost:5000');
+    alert('Upload failed. Please try again.');
     btn.disabled = false; btn.textContent = '🚀 Upload Dataset';
     load.classList.remove('show');
   }
@@ -446,7 +446,7 @@ async function runDetection() {
     enable("nav-results");
     show("results", document.getElementById("nav-results"));
   } catch {
-    alert('Detection failed. Check backend at localhost:5000/predict');
+    alert('Detection failed. Please try again.');
     btn.disabled = false; btn.textContent = '🔍 Run Detection Analysis';
     load.classList.remove('show');
   }
