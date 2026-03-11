@@ -38,7 +38,9 @@ def get_latest_uploaded_file():
 def home():
     return render_template("login.html")
 
-
+@app.route("/register")
+def register_page():
+    return render_template("register.html")
 # ================= REGISTER =================
 @app.route("/register", methods=["POST"])
 def register():
@@ -214,3 +216,4 @@ if __name__ == "__main__":
     print(f"🚀 IDS Backend running on port {port}")
 
     app.run(host="0.0.0.0", port=port)
+
