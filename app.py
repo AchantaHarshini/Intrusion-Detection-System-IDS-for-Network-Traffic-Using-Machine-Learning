@@ -5,7 +5,7 @@ import os
 import numpy as np
 from datetime import datetime
 from sklearn.metrics import auc
-import json
+import mysql.connector
 
 app = Flask(__name__)
 CORS(app)
@@ -15,34 +15,49 @@ app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-USERS_FILE = "users.json"
-UPLOAD_HISTORY_FILE = "uploads.json"
-
-# create users file
-if not os.path.exists(USERS_FILE):
-    with open(USERS_FILE, "w") as f:
-        json.dump({}, f)
-
-# create upload history file
-if not os.path.exists(UPLOAD_HISTORY_FILE):
-    with open(UPLOAD_HISTORY_FILE, "w") as f:
-        json.dump([], f)
-
 LAST_UPLOADED_FILE = None
 
 
-# ================= LOAD / SAVE UPLOAD HISTORY =================
-def load_uploads():
-    with open(UPLOAD_HISTORY_FILE, "r") as f:
-        return json.load(f)
+# ================= MYSQL CONNECTION =================
+
+db = mysql.connector.connect(
+    host=os.environ.get("MYSQLHOST"),
+    user=os.environ.get("MYSQLUSER"),
+    password=os.environ.get("MYSQLPASSWORD"),
+    database=os.environ.get("MYSQLDATABASE"),
+    port=int(os.environ.get("MYSQLPORT"))
+)
+
+cursor = db.cursor(dictionary=True)
 
 
-def save_uploads(data):
-    with open(UPLOAD_HISTORY_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+# ================= CREATE TABLES =================
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(100)
+)
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS uploads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    filename VARCHAR(255),
+    uploaded_at VARCHAR(50),
+    status VARCHAR(50),
+    prediction VARCHAR(50),
+    confidence FLOAT
+)
+""")
+
+db.commit()
 
 
 # ================= GET LATEST FILE =================
+
 def get_latest_uploaded_file():
     files = [
         os.path.join(UPLOAD_FOLDER, f)
@@ -53,12 +68,14 @@ def get_latest_uploaded_file():
 
 
 # ================= HOME =================
+
 @app.route("/")
 def home():
     return render_template("login.html")
 
 
 # ================= REGISTER =================
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
 
@@ -68,24 +85,24 @@ def register():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    if not username or not password:
-        return render_template("register.html", error="Invalid input")
+    cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
+    user = cursor.fetchone()
 
-    with open(USERS_FILE, "r") as f:
-        users = json.load(f)
-
-    if username in users:
+    if user:
         return render_template("register.html", error="User already exists")
 
-    users[username] = password
+    cursor.execute(
+        "INSERT INTO users (username,password) VALUES (%s,%s)",
+        (username, password)
+    )
 
-    with open(USERS_FILE, "w") as f:
-        json.dump(users, f)
+    db.commit()
 
     return render_template("login.html")
 
 
 # ================= LOGIN =================
+
 @app.route("/login", methods=["POST"])
 def login():
 
@@ -96,17 +113,21 @@ def login():
     if username == "admin" and password == "admin123":
         return render_template("admin-dashboard.html")
 
-    # USER LOGIN
-    with open(USERS_FILE, "r") as f:
-        users = json.load(f)
+    cursor.execute(
+        "SELECT * FROM users WHERE username=%s AND password=%s",
+        (username, password)
+    )
 
-    if username in users and users[username] == password:
+    user = cursor.fetchone()
+
+    if user:
         return render_template("user-dashboard.html")
 
     return render_template("login.html", error="Invalid credentials")
 
 
-# ================= DASHBOARD ROUTES =================
+# ================= DASHBOARD =================
+
 @app.route("/admin-dashboard")
 def admin_dashboard():
     return render_template("admin-dashboard.html")
@@ -118,6 +139,7 @@ def user_dashboard():
 
 
 # ================= FILE UPLOAD =================
+
 @app.route("/upload", methods=["POST"])
 def upload():
 
@@ -139,19 +161,19 @@ def upload():
 
     LAST_UPLOADED_FILE = filepath
 
-    uploads = load_uploads()
+    cursor.execute("""
+        INSERT INTO uploads (username, filename, uploaded_at, status, prediction, confidence)
+        VALUES (%s,%s,%s,%s,%s,%s)
+    """, (
+        "user",
+        file.filename,
+        datetime.now().isoformat(),
+        "Pending",
+        None,
+        None
+    ))
 
-    uploads.append({
-        "id": len(uploads) + 1,
-        "username": "user",
-        "filename": file.filename,
-        "uploaded_at": datetime.now().isoformat(),
-        "status": "Pending",
-        "prediction": None,
-        "confidence": None
-    })
-
-    save_uploads(uploads)
+    db.commit()
 
     return jsonify({
         "message": "File uploaded successfully",
@@ -160,39 +182,40 @@ def upload():
 
 
 # ================= ADMIN: LIST UPLOADS =================
+
 @app.route("/admin/uploads")
 def admin_uploads():
-    return jsonify(load_uploads())
+
+    cursor.execute("SELECT * FROM uploads ORDER BY id DESC")
+    uploads = cursor.fetchall()
+
+    return jsonify(uploads)
 
 
 # ================= ADMIN: ANALYZE FILE =================
+
 @app.route("/admin/file/<int:file_id>")
 def analyze_file(file_id):
 
-    uploads = load_uploads()
+    prediction = np.random.choice(["Attack", "Normal"])
+    confidence = round(float(np.random.uniform(0.85, 0.99)), 3)
 
-    for file in uploads:
+    cursor.execute("""
+        UPDATE uploads
+        SET prediction=%s, confidence=%s, status=%s
+        WHERE id=%s
+    """, (prediction, confidence, "Analyzed", file_id))
 
-        if file["id"] == file_id:
+    db.commit()
 
-            prediction = np.random.choice(["Attack", "Normal"])
-            confidence = round(float(np.random.uniform(0.85, 0.99)), 3)
-
-            file["prediction"] = prediction
-            file["confidence"] = confidence
-            file["status"] = "Analyzed"
-
-            save_uploads(uploads)
-
-            return jsonify({
-                "prediction": prediction,
-                "confidence": confidence
-            })
-
-    return jsonify({"error": "File not found"}), 404
+    return jsonify({
+        "prediction": prediction,
+        "confidence": confidence
+    })
 
 
 # ================= ADMIN EVALUATION =================
+
 @app.route("/admin/eval")
 def admin_eval():
 
@@ -224,7 +247,8 @@ def admin_eval():
     })
 
 
-# ================= LIVE TRAFFIC STREAM =================
+# ================= LIVE TRAFFIC =================
+
 @app.route("/live")
 def live_traffic():
 
@@ -239,6 +263,7 @@ def live_traffic():
 
 
 # ================= PREDICTION =================
+
 @app.route("/predict")
 def predict():
 
@@ -264,6 +289,7 @@ def predict():
 
 
 # ================= RUN SERVER =================
+
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 10000))
