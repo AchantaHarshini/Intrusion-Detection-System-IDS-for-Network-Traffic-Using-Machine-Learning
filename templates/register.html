@@ -8,123 +8,67 @@
 
 <style>
 
-:root{
---bg:#03060f;
---surface:#080f1e;
---surface2:#0c1628;
---border:rgba(0,210,255,.12);
---border-bright:rgba(0,210,255,.4);
---accent:#00d2ff;
---danger:#ff4d6d;
---text:#e8f4f8;
---muted:rgba(232,244,248,.45);
-}
-
-*{box-sizing:border-box;margin:0;padding:0;}
-
 body{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
+background:#030610;
 font-family:'Syne',sans-serif;
-background:var(--bg);
-color:var(--text);
-}
-
-.wrapper{
+color:#ede9fe;
+height:100vh;
 display:flex;
-flex-direction:column;
-align-items:center;
-gap:30px;
-}
-
-.logo{
-display:flex;
-align-items:center;
-gap:10px;
-font-family:'Space Mono',monospace;
-font-size:13px;
-color:var(--muted);
-}
-
-.logo-icon{
-width:36px;
-height:36px;
-border:1px solid var(--border-bright);
-border-radius:10px;
-display:flex;
-align-items:center;
 justify-content:center;
-background:rgba(0,210,255,.05);
+align-items:center;
 }
 
-.card{
-width:420px;
-background:linear-gradient(145deg,var(--surface),var(--surface2));
-border:1px solid var(--border);
-border-radius:20px;
+.container{
+background:#08101f;
 padding:40px;
+border-radius:20px;
+width:360px;
+box-shadow:0 20px 60px rgba(0,0,0,.5);
 }
 
-.card-title{
-font-size:26px;
-font-weight:800;
-margin-bottom:5px;
+h1{
+font-size:24px;
+margin-bottom:20px;
+text-align:center;
 }
 
-.card-sub{
-font-size:13px;
-color:var(--muted);
-margin-bottom:25px;
-font-family:'Space Mono',monospace;
-}
-
-.field{
-margin-bottom:16px;
-}
-
-.field label{
-font-size:11px;
-letter-spacing:.1em;
-color:var(--muted);
-display:block;
-margin-bottom:6px;
-}
-
-.field input{
+input{
 width:100%;
 padding:12px;
-background:#000;
-border:1px solid var(--border);
-border-radius:10px;
-color:#fff;
+margin:10px 0;
+border-radius:8px;
+border:none;
+background:#0b1726;
+color:white;
 }
 
-.btn-register{
+button{
 width:100%;
-padding:14px;
+padding:12px;
+margin-top:10px;
 border:none;
 border-radius:10px;
-background:linear-gradient(135deg,#00d2ff,#0090c0);
+background:linear-gradient(135deg,#7b5ea7,#a78bfa);
+color:white;
 font-weight:700;
 cursor:pointer;
 }
 
-.login-link{
-margin-top:18px;
-text-align:center;
-color:var(--muted);
-cursor:pointer;
+button:hover{
+opacity:.9;
 }
 
-.login-link span{
-color:var(--accent);
+a{
+display:block;
+margin-top:15px;
+text-align:center;
+color:#a78bfa;
+text-decoration:none;
 }
 
 .error{
-color:var(--danger);
-font-size:13px;
+color:#ff4d6d;
+text-align:center;
 margin-bottom:10px;
 }
 
@@ -133,53 +77,27 @@ margin-bottom:10px;
 
 <body>
 
-<div class="wrapper">
+<div class="container">
 
-<div class="logo">
-<div class="logo-icon">🛡️</div>
-<span>IDS · Intrusion Detection System</span>
-</div>
-
-<div class="card">
-
-<div class="card-title">Create Account</div>
-<div class="card-sub">// REGISTER NEW USER</div>
+<h1>Create Account</h1>
 
 {% if error %}
 <div class="error">{{ error }}</div>
 {% endif %}
 
-<form action="/register" method="POST">
+<form method="POST" action="/register">
 
-<div class="field">
-<label>Username</label>
-<input type="text" name="username" placeholder="Enter username" required>
-</div>
+<input type="text" name="username" placeholder="Username" required>
 
-<div class="field">
-<label>Password</label>
-<input type="password" name="password" placeholder="Enter password" required>
-</div>
+<input type="password" name="password" placeholder="Password" required>
 
-<button class="btn-register">CREATE ACCOUNT</button>
+<button type="submit">Register</button>
 
 </form>
 
-<div class="login-link" onclick="goLogin()">
-Already have an account? <span>Login →</span>
-</div>
+<a href="/">Already have account? Login</a>
 
 </div>
-
-</div>
-
-<script>
-
-function goLogin(){
-window.location.href="/";
-}
-
-</script>
 
 </body>
 </html>
