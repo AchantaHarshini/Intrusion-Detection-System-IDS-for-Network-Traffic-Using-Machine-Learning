@@ -4,24 +4,43 @@ import pandas as pd
 import os
 import numpy as np
 from datetime import datetime
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import auc
 import json
 
 app = Flask(__name__)
 CORS(app)
 
+app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
+
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 USERS_FILE = "users.json"
+UPLOAD_HISTORY_FILE = "uploads.json"
 
 # create users file if not exists
 if not os.path.exists(USERS_FILE):
     with open(USERS_FILE, "w") as f:
         json.dump({}, f)
 
+# create upload history file
+if not os.path.exists(UPLOAD_HISTORY_FILE):
+    with open(UPLOAD_HISTORY_FILE, "w") as f:
+        json.dump([], f)
+
 LAST_UPLOADED_FILE = None
-UPLOAD_HISTORY = []
+
+
+# ================= LOAD UPLOAD HISTORY =================
+def load_uploads():
+    with open(UPLOAD_HISTORY_FILE, "r") as f:
+        return json.load(f)
+
+
+def save_uploads(data):
+    with open(UPLOAD_HISTORY_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
 
 # ================= GET LATEST FILE =================
 def get_latest_uploaded_file():
@@ -70,21 +89,34 @@ def register():
 @app.route("/login", methods=["POST"])
 def login():
 
-    username = request.form.get("username")
-    password = request.form.get("password")
+    data = request.get_json()
+
+    username = data.get("username")
+    password = data.get("password")
 
     # ADMIN LOGIN
     if username == "admin" and password == "admin123":
-        return render_template("admin-dashboard.html")
+        return jsonify({"redirect": "/admin-dashboard"})
 
     # USER LOGIN
     with open(USERS_FILE, "r") as f:
         users = json.load(f)
 
     if username in users and users[username] == password:
-        return render_template("user-dashboard.html")
+        return jsonify({"redirect": "/user-dashboard"})
 
-    return render_template("login.html", error="Invalid Credentials")
+    return jsonify({"error": "Invalid credentials"}), 401
+
+
+# ================= DASHBOARD ROUTES =================
+@app.route("/admin-dashboard")
+def admin_dashboard():
+    return render_template("admin-dashboard.html")
+
+
+@app.route("/user-dashboard")
+def user_dashboard():
+    return render_template("user-dashboard.html")
 
 
 # ================= FILE UPLOAD =================
@@ -106,9 +138,10 @@ def upload():
 
     LAST_UPLOADED_FILE = filepath
 
-    # store upload history for admin panel
-    UPLOAD_HISTORY.append({
-        "id": len(UPLOAD_HISTORY) + 1,
+    uploads = load_uploads()
+
+    uploads.append({
+        "id": len(uploads) + 1,
         "username": "user",
         "filename": file.filename,
         "uploaded_at": datetime.now().isoformat(),
@@ -116,6 +149,8 @@ def upload():
         "prediction": None,
         "confidence": None
     })
+
+    save_uploads(uploads)
 
     return jsonify({
         "message": "File uploaded successfully",
@@ -126,14 +161,16 @@ def upload():
 # ================= ADMIN: LIST UPLOADS =================
 @app.route("/admin/uploads")
 def admin_uploads():
-    return jsonify(UPLOAD_HISTORY)
+    return jsonify(load_uploads())
 
 
 # ================= ADMIN: ANALYZE FILE =================
 @app.route("/admin/file/<int:file_id>")
 def analyze_file(file_id):
 
-    for file in UPLOAD_HISTORY:
+    uploads = load_uploads()
+
+    for file in uploads:
 
         if file["id"] == file_id:
 
@@ -143,6 +180,8 @@ def analyze_file(file_id):
             file["prediction"] = prediction
             file["confidence"] = confidence
             file["status"] = "Analyzed"
+
+            save_uploads(uploads)
 
             return jsonify({
                 "prediction": prediction,
