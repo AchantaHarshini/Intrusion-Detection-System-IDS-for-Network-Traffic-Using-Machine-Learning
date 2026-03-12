@@ -8,8 +8,8 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   background:#03060f;color:#e8f4f8;font-family:'Syne',sans-serif;
-  display:flex;justify-content:center;align-items:center;
-  min-height:100vh;margin:0;overflow:hidden;position:relative;
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
+  overflow-y:auto;position:relative;
 }
 body::before{
   content:'';position:fixed;inset:0;
@@ -25,177 +25,173 @@ body::after{
 .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;animation:orbFloat 8s ease-in-out infinite;}
 .orb1{width:400px;height:400px;background:rgba(0,210,255,0.06);top:-100px;left:-100px;}
 .orb2{width:300px;height:300px;background:rgba(123,94,167,0.08);bottom:-80px;right:-80px;animation-delay:-4s;}
-.orb3{width:200px;height:200px;background:rgba(0,210,255,0.04);top:50%;right:10%;animation-delay:-2s;}
-@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-20px) scale(1.05);}}
-.wrapper{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;max-width:460px;padding:20px;}
+@keyframes orbFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+
+.wrapper{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;max-width:440px;padding:16px 20px;
+}
+
+/* top badge */
 .top-badge{
   display:flex;align-items:center;gap:8px;
   background:rgba(0,210,255,0.06);border:1px solid rgba(0,210,255,0.15);
-  border-radius:30px;padding:6px 18px;
+  border-radius:30px;padding:5px 16px;margin-bottom:12px;
   font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;
-  margin-bottom:14px;animation:fadeDown 0.6s ease both;
+  animation:fadeDown 0.6s ease both;
 }
 .badge-dot{width:6px;height:6px;border-radius:50%;background:#00d2ff;box-shadow:0 0 8px #00d2ff;animation:pulse 2s ease infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* card */
 .card{
   width:100%;
-  background:linear-gradient(145deg,rgba(12,22,40,0.95),rgba(8,15,30,0.98));
-  padding:28px 44px;border-radius:24px;
+  background:linear-gradient(145deg,rgba(12,22,40,0.97),rgba(8,15,30,0.99));
+  padding:24px 36px 28px;border-radius:20px;
   border:1px solid rgba(0,210,255,0.12);
-  box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 0 1px rgba(0,210,255,0.05),inset 0 1px 0 rgba(255,255,255,0.04);
+  box-shadow:0 20px 60px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.04);
   animation:fadeUp 0.7s ease both 0.1s;position:relative;overflow:hidden;
 }
 .card::before{
   content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
   background:linear-gradient(90deg,transparent,rgba(0,210,255,0.4),rgba(123,94,167,0.4),transparent);
 }
-.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:14px;}
-.shield{
-  width:50px;height:50px;background:rgba(0,210,255,0.06);
-  border:2px solid rgba(0,210,255,0.2);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:8px;
-  box-shadow:0 0 20px rgba(0,210,255,0.1);animation:shieldPulse 3s ease infinite;
+
+/* logo row - horizontal to save space */
+.logo-row{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
 }
-@keyframes shieldPulse{0%,100%{box-shadow:0 0 20px rgba(0,210,255,0.1);}50%{box-shadow:0 0 35px rgba(0,210,255,0.2);}}
-.logo-tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:4px;}
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:0 -44px 16px;}
-.tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;margin-bottom:8px;}
-h1{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;text-align:left;}
-.sub{font-size:12px;color:#3a5a7a;font-family:'Space Mono',monospace;}
+.shield{
+  width:42px;height:42px;flex-shrink:0;
+  background:rgba(0,210,255,0.06);border:2px solid rgba(0,210,255,0.2);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 0 16px rgba(0,210,255,0.1);
+  transition:border-color 0.3s,background 0.3s;
+}
+.logo-info .logo-tag{font-family:'Space Mono',monospace;font-size:9px;color:#00d2ff;letter-spacing:3px;transition:color 0.3s;}
+.logo-info h1{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.1;}
+.logo-info .sub{font-size:10px;color:#2a4a6a;font-family:'Space Mono',monospace;}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:0 -36px 16px;}
+
+/* error */
 .error{
-  color:#ff4d6d;text-align:center;margin:14px 0 0;font-size:12px;
+  display:none;color:#ff4d6d;text-align:center;margin-bottom:10px;font-size:11px;
   font-family:'Space Mono',monospace;
   background:rgba(255,77,109,0.06);border:1px solid rgba(255,77,109,0.15);
-  border-radius:8px;padding:8px 12px;
+  border-radius:8px;padding:7px 12px;
 }
-label{font-size:11px;display:block;margin-top:14px;color:#4a7a9a;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;}
-.input-wrap{position:relative;margin-top:8px;}
-.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0.5;pointer-events:none;}
+.error.show{display:block;}
+
+/* role toggle */
+.role-toggle{
+  display:flex;background:rgba(4,10,22,0.8);border:1px solid rgba(0,210,255,0.12);
+  border-radius:10px;padding:3px;gap:3px;margin-bottom:14px;
+}
+.role-btn{
+  flex:1;padding:8px;border:none;border-radius:7px;
+  background:transparent;color:#3a5a7a;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+  cursor:pointer;transition:all 0.3s;box-shadow:none;margin:0;width:auto;
+}
+.role-btn.active-user{background:linear-gradient(135deg,rgba(0,210,255,0.15),rgba(0,210,255,0.07));color:#00d2ff;border:1px solid rgba(0,210,255,0.25);}
+.role-btn.active-admin{background:linear-gradient(135deg,rgba(123,94,167,0.2),rgba(123,94,167,0.08));color:#a78bfa;border:1px solid rgba(123,94,167,0.3);}
+.role-btn:hover:not(.active-user):not(.active-admin){color:#6a8aaa;transform:none;}
+
+/* labels & inputs */
+label{font-size:10px;display:block;margin-top:12px;color:#4a7a9a;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;}
+.input-wrap{position:relative;margin-top:6px;}
+.input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;opacity:0.45;pointer-events:none;}
 input{
-  width:100%;padding:13px 14px 13px 40px;border-radius:10px;
+  width:100%;padding:11px 12px 11px 36px;border-radius:9px;
   border:1px solid rgba(0,210,255,0.12);background:rgba(4,10,22,0.8);
   color:white;font-family:'Syne',sans-serif;font-size:13px;
-  transition:border-color 0.3s,box-shadow 0.3s,background 0.3s;outline:none;
+  transition:border-color 0.3s,box-shadow 0.3s;outline:none;
 }
-input:focus{border-color:rgba(0,210,255,0.45);background:rgba(0,210,255,0.04);box-shadow:0 0 0 3px rgba(0,210,255,0.08),0 4px 16px rgba(0,0,0,0.3);}
+input:focus{border-color:rgba(0,210,255,0.4);box-shadow:0 0 0 3px rgba(0,210,255,0.07);}
 input::placeholder{color:#1e3a4a;font-size:12px;}
 
-/* forgot password row */
-.pw-row{display:flex;justify-content:space-between;align-items:center;margin-top:0;}
-.forgot-link{
-  display:inline-block;margin-top:8px;
-  font-size:11px;font-family:'Space Mono',monospace;
-  color:#4a7a9a;text-decoration:none;
-  transition:color 0.2s;
-}
+/* forgot */
+.forgot-link{display:block;margin-top:6px;font-size:10px;font-family:'Space Mono',monospace;color:#3a5a7a;text-decoration:none;transition:color 0.2s;text-align:right;}
 .forgot-link:hover{color:#00d2ff;}
 
-button{
-  width:100%;margin-top:18px;padding:15px;border:none;border-radius:12px;
+/* login button */
+.login-btn{
+  width:100%;margin-top:16px;padding:13px;border:none;border-radius:11px;
   background:linear-gradient(135deg,#00d2ff 0%,#7b5ea7 100%);
   color:white;font-weight:700;font-family:'Syne',sans-serif;font-size:13px;letter-spacing:2px;
   cursor:pointer;position:relative;overflow:hidden;
   transition:opacity 0.3s,transform 0.2s,box-shadow 0.3s;
-  box-shadow:0 8px 24px rgba(0,210,255,0.2);
+  box-shadow:0 6px 20px rgba(0,210,255,0.2);
 }
-button:hover{opacity:0.92;transform:translateY(-1px);box-shadow:0 12px 32px rgba(0,210,255,0.3);}
-button:active{transform:translateY(0);}
-button::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation:shimmer 3s ease infinite;}
+.login-btn:hover{opacity:0.9;transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,210,255,0.28);}
+.login-btn:active{transform:translateY(0);}
+.login-btn::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);animation:shimmer 3s ease infinite;}
 @keyframes shimmer{0%{left:-100%;}100%{left:200%;}}
-.register-link{margin-top:14px;font-size:12px;text-align:center;color:#2a4a6a;font-family:'Space Mono',monospace;}
-.register-link a{color:#00d2ff;text-decoration:none;font-weight:700;transition:opacity 0.2s;}
+
+/* register link */
+.register-link{margin-top:14px;font-size:11px;text-align:center;color:#2a4a6a;font-family:'Space Mono',monospace;}
+.register-link a{color:#00d2ff;text-decoration:none;font-weight:700;}
 .register-link a:hover{opacity:0.75;}
 
-/* ── FORGOT PASSWORD MODAL ── */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.75);
-  display:none;align-items:center;justify-content:center;z-index:100;
-  backdrop-filter:blur(6px);
-}
+/* modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(6px);}
 .modal-overlay.active{display:flex;}
 .modal{
   background:linear-gradient(145deg,rgba(12,22,40,0.98),rgba(8,15,30,0.99));
   border:1px solid rgba(0,210,255,0.15);border-radius:20px;
-  padding:36px 40px;width:100%;max-width:400px;
+  padding:32px 36px;width:100%;max-width:380px;margin:20px;
   box-shadow:0 30px 80px rgba(0,0,0,0.8);
   position:relative;animation:fadeUp 0.4s ease both;
 }
-.modal::before{
-  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(0,210,255,0.4),transparent);
-}
-.modal-close{
-  position:absolute;top:16px;right:18px;
-  background:none;border:none;color:#2a4a6a;font-size:20px;
-  cursor:pointer;transition:color 0.2s;padding:0;width:auto;margin:0;
-  box-shadow:none;letter-spacing:0;
-}
+.modal::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.4),transparent);}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#2a4a6a;font-size:18px;cursor:pointer;padding:0;width:auto;margin:0;box-shadow:none;transition:color 0.2s;}
 .modal-close:hover{color:#00d2ff;transform:none;}
-.modal-tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;margin-bottom:8px;}
-.modal h3{font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;}
-.modal .modal-sub{font-size:11px;color:#3a5a7a;font-family:'Space Mono',monospace;margin-bottom:20px;}
-.modal-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:0 -40px 20px;}
-.modal-success{
-  display:none;text-align:center;padding:16px 0;
-}
-.modal-success .tick{font-size:36px;margin-bottom:10px;}
-.modal-success p{font-size:12px;font-family:'Space Mono',monospace;color:#22c55e;line-height:1.6;}
+.modal-tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;margin-bottom:6px;}
+.modal h3{font-size:18px;font-weight:800;color:#fff;margin-bottom:3px;}
+.modal-sub{font-size:10px;color:#3a5a7a;font-family:'Space Mono',monospace;margin-bottom:16px;}
+.modal-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:0 -36px 16px;}
+.modal-success{display:none;text-align:center;padding:12px 0;}
+.modal-success .tick{font-size:34px;margin-bottom:8px;}
+.modal-success p{font-size:11px;font-family:'Space Mono',monospace;color:#22c55e;line-height:1.6;}
 
-
-/* ── ROLE TOGGLE ── */
-.role-toggle{
-  display:flex;background:rgba(4,10,22,0.8);border:1px solid rgba(0,210,255,0.12);
-  border-radius:12px;padding:4px;gap:4px;margin-bottom:20px;
-}
-.role-btn{
-  flex:1;padding:10px;border:none;border-radius:9px;
-  background:transparent;color:#3a5a7a;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;
-  cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;
-  box-shadow:none;margin:0;width:auto;
-}
-.role-btn.active-user{
-  background:linear-gradient(135deg,rgba(0,210,255,0.15),rgba(0,210,255,0.08));
-  color:#00d2ff;border:1px solid rgba(0,210,255,0.25);
-  box-shadow:0 2px 12px rgba(0,210,255,0.1);
-}
-.role-btn.active-admin{
-  background:linear-gradient(135deg,rgba(123,94,167,0.2),rgba(123,94,167,0.1));
-  color:#a78bfa;border:1px solid rgba(123,94,167,0.3);
-  box-shadow:0 2px 12px rgba(123,94,167,0.15);
-}
-.role-btn:hover:not(.active-user):not(.active-admin){color:#6a8aaa;transform:none;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-@keyframes fadeDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
-
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
-<div class="orb orb3"></div>
 
 <div class="wrapper">
   <div class="top-badge"><div class="badge-dot"></div>IDS SYSTEM · SECURE LOGIN</div>
 
   <div class="card">
-    <div class="logo-wrap">
-      <div class="shield">🛡️</div>
-      <div class="logo-tag">IDS SYSTEM</div>
+    <!-- Logo row -->
+    <div class="logo-row">
+      <div class="shield" id="shield">🛡️</div>
+      <div class="logo-info">
+        <div class="logo-tag" id="logoTag">IDS SYSTEM</div>
+        <h1>Login</h1>
+        <div class="sub">intrusion_detection_system.exe</div>
+      </div>
     </div>
-    <div class="divider"></div>
-    <div class="tag">// AUTHENTICATION</div>
-    <h1>Login</h1>
-    <div class="sub">intrusion_detection_system.exe</div>
 
+    <div class="divider"></div>
+
+    <!-- Error -->
     <div class="error" id="errorMsg"></div>
 
     <form method="POST" action="/login">
       <input type="hidden" name="role" id="roleInput" value="user">
+
+      <!-- Role toggle -->
       <div class="role-toggle">
         <button type="button" class="role-btn active-user" id="btnUser" onclick="setRole('user')">👤 USER</button>
         <button type="button" class="role-btn" id="btnAdmin" onclick="setRole('admin')">🛡️ ADMIN</button>
       </div>
+
       <label>Username</label>
       <div class="input-wrap">
         <span class="input-icon">👤</span>
@@ -207,18 +203,16 @@ button::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100
         <span class="input-icon">🔒</span>
         <input type="password" name="password" placeholder="Enter your password" required>
       </div>
-      <div class="pw-row">
-        <a href="#" class="forgot-link" onclick="openForgot(event)">Forgot password?</a>
-      </div>
+      <a href="#" class="forgot-link" onclick="openForgot(event)">Forgot password?</a>
 
-      <button type="submit">LOGIN</button>
+      <button type="submit" class="login-btn">LOGIN</button>
     </form>
 
     <div class="register-link">Don't have an account? &nbsp;<a href="/register">Create one</a></div>
   </div>
 </div>
 
-<!-- ── FORGOT PASSWORD MODAL ── -->
+<!-- Forgot Password Modal -->
 <div class="modal-overlay" id="forgotModal">
   <div class="modal">
     <button class="modal-close" onclick="closeForgot()">✕</button>
@@ -226,40 +220,49 @@ button::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100
     <h3>Forgot Password</h3>
     <div class="modal-sub">Enter your username to reset your password</div>
     <div class="modal-divider"></div>
-
     <div id="forgotForm">
       <label>Username</label>
-      <div class="input-wrap" style="margin-top:8px;">
+      <div class="input-wrap" style="margin-top:6px;">
         <span class="input-icon">👤</span>
         <input type="text" id="resetUsername" placeholder="Enter your username">
       </div>
-      <label style="margin-top:16px;">New Password</label>
-      <div class="input-wrap" style="margin-top:8px;">
+      <label style="margin-top:12px;">New Password</label>
+      <div class="input-wrap" style="margin-top:6px;">
         <span class="input-icon">🔒</span>
         <input type="password" id="newPassword" placeholder="Enter new password">
       </div>
-      <label style="margin-top:16px;">Confirm New Password</label>
-      <div class="input-wrap" style="margin-top:8px;">
+      <label style="margin-top:12px;">Confirm New Password</label>
+      <div class="input-wrap" style="margin-top:6px;">
         <span class="input-icon">🔑</span>
         <input type="password" id="confirmNewPassword" placeholder="Repeat new password">
       </div>
-      <div class="match-hint" id="resetMatchHint" style="font-size:10px;font-family:'Space Mono',monospace;margin-top:6px;height:14px;"></div>
-      <button style="margin-top:22px;" onclick="submitReset()">RESET PASSWORD</button>
+      <div id="resetMatchHint" style="font-size:10px;font-family:'Space Mono',monospace;margin-top:5px;height:13px;"></div>
+      <button class="login-btn" style="margin-top:16px;" onclick="submitReset()">RESET PASSWORD</button>
     </div>
-
     <div class="modal-success" id="resetSuccess">
       <div class="tick">✅</div>
-      <p>Password reset successful!<br>You can now login with<br>your new password.</p>
-      <button style="margin-top:20px;" onclick="closeForgot()">BACK TO LOGIN</button>
+      <p>Password reset successful!<br>You can now login with your new password.</p>
+      <button class="login-btn" style="margin-top:16px;" onclick="closeForgot()">BACK TO LOGIN</button>
     </div>
   </div>
 </div>
 
 <script>
-function openForgot(e){
-  e.preventDefault();
-  document.getElementById('forgotModal').classList.add('active');
+function setRole(role){
+  document.getElementById('roleInput').value=role;
+  const u=document.getElementById('btnUser'),a=document.getElementById('btnAdmin');
+  const sh=document.getElementById('shield'),lt=document.getElementById('logoTag');
+  if(role==='user'){
+    u.className='role-btn active-user';a.className='role-btn';
+    sh.style.borderColor='rgba(0,210,255,0.2)';sh.style.background='rgba(0,210,255,0.06)';
+    lt.style.color='#00d2ff';
+  }else{
+    a.className='role-btn active-admin';u.className='role-btn';
+    sh.style.borderColor='rgba(123,94,167,0.3)';sh.style.background='rgba(123,94,167,0.08)';
+    lt.style.color='#a78bfa';
+  }
 }
+function openForgot(e){e.preventDefault();document.getElementById('forgotModal').classList.add('active');}
 function closeForgot(){
   document.getElementById('forgotModal').classList.remove('active');
   document.getElementById('forgotForm').style.display='block';
@@ -269,65 +272,28 @@ function closeForgot(){
   document.getElementById('confirmNewPassword').value='';
   document.getElementById('resetMatchHint').textContent='';
 }
-document.getElementById('confirmNewPassword').addEventListener('input', function(){
-  const p = document.getElementById('newPassword').value;
-  const c = this.value;
-  const hint = document.getElementById('resetMatchHint');
-  if(!c){hint.textContent='';return;}
-  if(p===c){hint.textContent='✓ Passwords match';hint.style.color='#22c55e';}
-  else{hint.textContent='✗ Passwords do not match';hint.style.color='#ef4444';}
+document.getElementById('confirmNewPassword').addEventListener('input',function(){
+  const p=document.getElementById('newPassword').value,c=this.value,h=document.getElementById('resetMatchHint');
+  if(!c){h.textContent='';return;}
+  h.textContent=p===c?'✓ Passwords match':'✗ Passwords do not match';
+  h.style.color=p===c?'#22c55e':'#ef4444';
 });
 function submitReset(){
-  const user = document.getElementById('resetUsername').value.trim();
-  const np = document.getElementById('newPassword').value;
-  const cp = document.getElementById('confirmNewPassword').value;
+  const user=document.getElementById('resetUsername').value.trim();
+  const np=document.getElementById('newPassword').value;
+  const cp=document.getElementById('confirmNewPassword').value;
   if(!user||!np||!cp){alert('Please fill all fields.');return;}
   if(np!==cp){alert('Passwords do not match.');return;}
-  fetch('/reset-password',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({username:user,new_password:np})
-  }).then(r=>r.json()).then(data=>{
-    if(data.success){
-      document.getElementById('forgotForm').style.display='none';
-      document.getElementById('resetSuccess').style.display='block';
-    } else {
-      alert(data.message||'Reset failed. Please check your username.');
-    }
-  }).catch(()=>{
-    document.getElementById('forgotForm').style.display='none';
-    document.getElementById('resetSuccess').style.display='block';
-  });
+  fetch('/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,new_password:np})})
+  .then(r=>r.json()).then(d=>{
+    if(d.success){document.getElementById('forgotForm').style.display='none';document.getElementById('resetSuccess').style.display='block';}
+    else alert(d.message||'Reset failed. Please check your username.');
+  }).catch(()=>{document.getElementById('forgotForm').style.display='none';document.getElementById('resetSuccess').style.display='block';});
 }
-// close modal on outside click
-document.getElementById('forgotModal').addEventListener('click',function(e){
-  if(e.target===this)closeForgot();
-});
-function setRole(role){
-  document.getElementById('roleInput').value = role;
-  const btnU = document.getElementById('btnUser');
-  const btnA = document.getElementById('btnAdmin');
-  const shield = document.querySelector('.shield');
-  const logoTag = document.querySelector('.logo-tag');
-  const badge = document.querySelector('.top-badge');
-  if(role==='user'){
-    btnU.className='role-btn active-user';
-    btnA.className='role-btn';
-    shield.style.borderColor='rgba(0,210,255,0.2)';
-    shield.style.background='rgba(0,210,255,0.06)';
-    logoTag.style.color='#00d2ff';
-  } else {
-    btnA.className='role-btn active-admin';
-    btnU.className='role-btn';
-    shield.style.borderColor='rgba(123,94,167,0.3)';
-    shield.style.background='rgba(123,94,167,0.08)';
-    logoTag.style.color='#a78bfa';
-  }
-}
-// show error from URL param
+document.getElementById('forgotModal').addEventListener('click',function(e){if(e.target===this)closeForgot();});
 const params=new URLSearchParams(window.location.search);
-const err=params.get("error");
-if(err){document.getElementById("errorMsg").textContent=err;}
+const err=params.get('error');
+if(err){const el=document.getElementById('errorMsg');el.textContent=err;el.classList.add('show');}
 </script>
 </body>
 </html>
