@@ -18,7 +18,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 USERS_FILE = "users.json"
 UPLOAD_HISTORY_FILE = "uploads.json"
 
-# create users file if not exists
+# create users file
 if not os.path.exists(USERS_FILE):
     with open(USERS_FILE, "w") as f:
         json.dump({}, f)
@@ -31,7 +31,7 @@ if not os.path.exists(UPLOAD_HISTORY_FILE):
 LAST_UPLOADED_FILE = None
 
 
-# ================= LOAD UPLOAD HISTORY =================
+# ================= LOAD / SAVE UPLOAD HISTORY =================
 def load_uploads():
     with open(UPLOAD_HISTORY_FILE, "r") as f:
         return json.load(f)
@@ -89,23 +89,21 @@ def register():
 @app.route("/login", methods=["POST"])
 def login():
 
-    data = request.get_json()
-
-    username = data.get("username")
-    password = data.get("password")
+    username = request.form.get("username")
+    password = request.form.get("password")
 
     # ADMIN LOGIN
     if username == "admin" and password == "admin123":
-        return jsonify({"redirect": "/admin-dashboard"})
+        return render_template("admin-dashboard.html")
 
     # USER LOGIN
     with open(USERS_FILE, "r") as f:
         users = json.load(f)
 
     if username in users and users[username] == password:
-        return jsonify({"redirect": "/user-dashboard"})
+        return render_template("user-dashboard.html")
 
-    return jsonify({"error": "Invalid credentials"}), 401
+    return render_template("login.html", error="Invalid credentials")
 
 
 # ================= DASHBOARD ROUTES =================
@@ -132,6 +130,9 @@ def upload():
 
     if file.filename == "":
         return jsonify({"error": "No selected file"}), 400
+
+    if not file.filename.endswith(".csv"):
+        return jsonify({"error": "Only CSV files allowed"}), 400
 
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
