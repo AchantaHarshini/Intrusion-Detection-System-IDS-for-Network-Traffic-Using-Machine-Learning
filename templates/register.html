@@ -9,67 +9,75 @@
 <style>
 
 body{
-background:#030610;
+background:#03060f;
+color:#e8f4f8;
 font-family:'Syne',sans-serif;
-color:#ede9fe;
-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
+height:100vh;
+margin:0;
 }
 
-.container{
-background:#08101f;
+.card{
+width:420px;
+background:#0c1628;
 padding:40px;
 border-radius:20px;
-width:360px;
-box-shadow:0 20px 60px rgba(0,0,0,.5);
+box-shadow:0 20px 50px rgba(0,0,0,0.7);
 }
 
-h1{
-font-size:24px;
-margin-bottom:20px;
-text-align:center;
+h2{
+margin-bottom:10px;
+}
+
+label{
+font-size:12px;
+display:block;
+margin-top:20px;
+color:#aaa;
 }
 
 input{
 width:100%;
 padding:12px;
-margin:10px 0;
+margin-top:6px;
 border-radius:8px;
-border:none;
-background:#0b1726;
+border:1px solid #333;
+background:#080f1e;
 color:white;
 }
 
 button{
 width:100%;
-padding:12px;
-margin-top:10px;
+margin-top:25px;
+padding:14px;
 border:none;
 border-radius:10px;
-background:linear-gradient(135deg,#7b5ea7,#a78bfa);
+background:#7b5ea7;
 color:white;
-font-weight:700;
+font-weight:bold;
 cursor:pointer;
 }
 
 button:hover{
-opacity:.9;
-}
-
-a{
-display:block;
-margin-top:15px;
-text-align:center;
-color:#a78bfa;
-text-decoration:none;
+background:#5a3f8a;
 }
 
 .error{
 color:#ff4d6d;
+margin-top:15px;
+}
+
+.login{
+margin-top:20px;
+font-size:13px;
 text-align:center;
-margin-bottom:10px;
+}
+
+.login a{
+color:#00d2ff;
+text-decoration:none;
 }
 
 </style>
@@ -77,25 +85,30 @@ margin-bottom:10px;
 
 <body>
 
-<div class="container">
+<div class="card">
 
-<h1>Create Account</h1>
+<h2>Create Account</h2>
+<p style="color:#aaa">// NEW USER REGISTER</p>
 
-{% if error %}
-<div class="error">{{ error }}</div>
-{% endif %}
+<form action="/register" method="POST">
 
-<form method="POST" action="/register">
+<label>Username</label>
+<input type="text" name="username" required>
 
-<input type="text" name="username" placeholder="Username" required>
+<label>Password</label>
+<input type="password" name="password" required>
 
-<input type="password" name="password" placeholder="Password" required>
+<label>Confirm Password</label>
+<input type="password" name="confirm_password" required>
 
-<button type="submit">Register</button>
+<button type="submit">CREATE ACCOUNT</button>
 
 </form>
 
-<a href="/">Already have account? Login</a>
+<div class="login">
+Already have an account?  
+<a href="/">Login</a>
+</div>
 
 </div>
 
