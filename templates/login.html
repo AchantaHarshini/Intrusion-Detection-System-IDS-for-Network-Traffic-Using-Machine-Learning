@@ -33,14 +33,14 @@ body::after{
   background:rgba(0,210,255,0.06);border:1px solid rgba(0,210,255,0.15);
   border-radius:30px;padding:6px 18px;
   font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;
-  margin-bottom:20px;animation:fadeDown 0.6s ease both;
+  margin-bottom:14px;animation:fadeDown 0.6s ease both;
 }
 .badge-dot{width:6px;height:6px;border-radius:50%;background:#00d2ff;box-shadow:0 0 8px #00d2ff;animation:pulse 2s ease infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
 .card{
   width:100%;
   background:linear-gradient(145deg,rgba(12,22,40,0.95),rgba(8,15,30,0.98));
-  padding:40px 44px;border-radius:24px;
+  padding:28px 44px;border-radius:24px;
   border:1px solid rgba(0,210,255,0.12);
   box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 0 1px rgba(0,210,255,0.05),inset 0 1px 0 rgba(255,255,255,0.04);
   animation:fadeUp 0.7s ease both 0.1s;position:relative;overflow:hidden;
@@ -49,16 +49,16 @@ body::after{
   content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
   background:linear-gradient(90deg,transparent,rgba(0,210,255,0.4),rgba(123,94,167,0.4),transparent);
 }
-.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:24px;}
+.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:14px;}
 .shield{
-  width:60px;height:60px;background:rgba(0,210,255,0.06);
+  width:50px;height:50px;background:rgba(0,210,255,0.06);
   border:2px solid rgba(0,210,255,0.2);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:10px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:8px;
   box-shadow:0 0 20px rgba(0,210,255,0.1);animation:shieldPulse 3s ease infinite;
 }
 @keyframes shieldPulse{0%,100%{box-shadow:0 0 20px rgba(0,210,255,0.1);}50%{box-shadow:0 0 35px rgba(0,210,255,0.2);}}
 .logo-tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:4px;}
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:0 -44px 28px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:0 -44px 16px;}
 .tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;margin-bottom:8px;}
 h1{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;text-align:left;}
 .sub{font-size:12px;color:#3a5a7a;font-family:'Space Mono',monospace;}
@@ -68,7 +68,7 @@ h1{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom
   background:rgba(255,77,109,0.06);border:1px solid rgba(255,77,109,0.15);
   border-radius:8px;padding:8px 12px;
 }
-label{font-size:11px;display:block;margin-top:20px;color:#4a7a9a;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;}
+label{font-size:11px;display:block;margin-top:14px;color:#4a7a9a;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;}
 .input-wrap{position:relative;margin-top:8px;}
 .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0.5;pointer-events:none;}
 input{
@@ -91,7 +91,7 @@ input::placeholder{color:#1e3a4a;font-size:12px;}
 .forgot-link:hover{color:#00d2ff;}
 
 button{
-  width:100%;margin-top:26px;padding:15px;border:none;border-radius:12px;
+  width:100%;margin-top:18px;padding:15px;border:none;border-radius:12px;
   background:linear-gradient(135deg,#00d2ff 0%,#7b5ea7 100%);
   color:white;font-weight:700;font-family:'Syne',sans-serif;font-size:13px;letter-spacing:2px;
   cursor:pointer;position:relative;overflow:hidden;
@@ -102,7 +102,7 @@ button:hover{opacity:0.92;transform:translateY(-1px);box-shadow:0 12px 32px rgba
 button:active{transform:translateY(0);}
 button::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation:shimmer 3s ease infinite;}
 @keyframes shimmer{0%{left:-100%;}100%{left:200%;}}
-.register-link{margin-top:20px;font-size:12px;text-align:center;color:#2a4a6a;font-family:'Space Mono',monospace;}
+.register-link{margin-top:14px;font-size:12px;text-align:center;color:#2a4a6a;font-family:'Space Mono',monospace;}
 .register-link a{color:#00d2ff;text-decoration:none;font-weight:700;transition:opacity 0.2s;}
 .register-link a:hover{opacity:0.75;}
 
