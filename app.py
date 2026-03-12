@@ -25,9 +25,9 @@ db = mysql.connector.connect(
     user=os.environ.get("MYSQLUSER"),
     password=os.environ.get("MYSQLPASSWORD"),
     database=os.environ.get("MYSQLDATABASE"),
-    port=int(os.environ.get("MYSQLPORT"))
+    port=int(os.environ.get("MYSQLPORT")),
+    connection_timeout=10
 )
-
 cursor = db.cursor(dictionary=True)
 
 
@@ -297,3 +297,4 @@ if __name__ == "__main__":
     print("🚀 IDS Backend Running")
 
     app.run(host="0.0.0.0", port=port)
+
