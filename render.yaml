@@ -5,3 +5,22 @@ services:
     buildCommand: npm install
     startCommand: node server.js
     plan: free
+```
+
+Click **"Commit changes"**
+
+---
+
+### Problem 2 — Upload new server.js
+Go to GitHub → click `server.js` → click **pencil ✏️** → select all code → delete → paste the new `server.js` I just gave you → **"Commit changes"**
+
+---
+
+### After both commits:
+Go to Render → **Manual Deploy → Deploy latest commit**
+
+Then check Logs — you should see:
+```
+IDS Backend running on port 10000
+MySQL connected successfully
+Tables ready
