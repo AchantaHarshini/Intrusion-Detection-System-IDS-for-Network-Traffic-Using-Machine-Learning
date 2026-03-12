@@ -3,114 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <title>IDS · Register</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-
+*{margin:0;padding:0;box-sizing:border-box;}
 body{
-background:#03060f;
-color:#e8f4f8;
-font-family:'Syne',sans-serif;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
+  background:#03060f;color:#e8f4f8;font-family:'Syne',sans-serif;
+  display:flex;justify-content:center;align-items:center;
+  min-height:100vh;margin:0;overflow:hidden;position:relative;
 }
-
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,210,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,210,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px;animation:gridMove 20s linear infinite;pointer-events:none;z-index:0;
+}
+@keyframes gridMove{from{background-position:0 0;}to{background-position:40px 40px;}}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+  pointer-events:none;z-index:1;
+}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;animation:orbFloat 8s ease-in-out infinite;}
+.orb1{width:400px;height:400px;background:rgba(0,210,255,0.06);top:-100px;left:-100px;}
+.orb2{width:300px;height:300px;background:rgba(123,94,167,0.08);bottom:-80px;right:-80px;animation-delay:-4s;}
+.orb3{width:200px;height:200px;background:rgba(0,210,255,0.04);top:50%;right:10%;animation-delay:-2s;}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-20px) scale(1.05);}}
+.wrapper{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;max-width:460px;padding:20px;}
+.top-badge{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(0,210,255,0.06);border:1px solid rgba(0,210,255,0.15);
+  border-radius:30px;padding:6px 18px;
+  font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;
+  margin-bottom:20px;animation:fadeDown 0.6s ease both;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#00d2ff;box-shadow:0 0 8px #00d2ff;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
 .card{
-width:420px;
-background:#0c1628;
-padding:40px;
-border-radius:20px;
-box-shadow:0 20px 50px rgba(0,0,0,0.7);
+  width:100%;
+  background:linear-gradient(145deg,rgba(12,22,40,0.95),rgba(8,15,30,0.98));
+  padding:38px 44px;border-radius:24px;
+  border:1px solid rgba(0,210,255,0.12);
+  box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 0 1px rgba(0,210,255,0.05),inset 0 1px 0 rgba(255,255,255,0.04);
+  animation:fadeUp 0.7s ease both 0.1s;position:relative;overflow:hidden;
 }
-
-h2{
-margin-bottom:10px;
+.card::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,210,255,0.4),rgba(123,94,167,0.4),transparent);
 }
-
-label{
-font-size:12px;
-display:block;
-margin-top:20px;
-color:#aaa;
-}
-
+.tag{font-family:'Space Mono',monospace;font-size:10px;color:#00d2ff;letter-spacing:3px;margin-bottom:8px;}
+h2{font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;}
+.sub{font-size:12px;color:#3a5a7a;font-family:'Space Mono',monospace;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,210,255,0.15),transparent);margin:20px -44px 24px;}
+label{font-size:11px;display:block;margin-top:18px;color:#4a7a9a;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;}
+.input-wrap{position:relative;margin-top:8px;}
+.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0.5;pointer-events:none;}
 input{
-width:100%;
-padding:12px;
-margin-top:6px;
-border-radius:8px;
-border:1px solid #333;
-background:#080f1e;
-color:white;
+  width:100%;padding:13px 14px 13px 40px;border-radius:10px;
+  border:1px solid rgba(0,210,255,0.12);background:rgba(4,10,22,0.8);
+  color:white;font-family:'Syne',sans-serif;font-size:13px;
+  transition:border-color 0.3s,box-shadow 0.3s,background 0.3s;outline:none;
 }
-
+input:focus{border-color:rgba(0,210,255,0.45);background:rgba(0,210,255,0.04);box-shadow:0 0 0 3px rgba(0,210,255,0.08),0 4px 16px rgba(0,0,0,0.3);}
+input::placeholder{color:#1e3a4a;font-size:12px;}
+.strength-bar{display:flex;gap:4px;margin-top:8px;}
+.strength-seg{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.06);transition:background 0.3s;}
+.strength-label{font-size:10px;font-family:'Space Mono',monospace;color:#2a4a6a;margin-top:4px;transition:color 0.3s;}
+.match-hint{font-size:10px;font-family:'Space Mono',monospace;margin-top:6px;height:14px;transition:color 0.3s;}
 button{
-width:100%;
-margin-top:25px;
-padding:14px;
-border:none;
-border-radius:10px;
-background:#7b5ea7;
-color:white;
-font-weight:bold;
-cursor:pointer;
+  width:100%;margin-top:26px;padding:15px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#00d2ff 0%,#7b5ea7 100%);
+  color:white;font-weight:700;font-family:'Syne',sans-serif;font-size:13px;letter-spacing:2px;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:opacity 0.3s,transform 0.2s,box-shadow 0.3s;
+  box-shadow:0 8px 24px rgba(0,210,255,0.2);
 }
-
-button:hover{
-background:#5a3f8a;
-}
-
-.error{
-color:#ff4d6d;
-margin-top:15px;
-}
-
-.login{
-margin-top:20px;
-font-size:13px;
-text-align:center;
-}
-
-.login a{
-color:#00d2ff;
-text-decoration:none;
-}
-
+button:hover:not(:disabled){opacity:0.92;transform:translateY(-1px);box-shadow:0 12px 32px rgba(0,210,255,0.3);}
+button:active:not(:disabled){transform:translateY(0);}
+button:disabled{background:linear-gradient(135deg,rgba(0,210,255,0.2),rgba(123,94,167,0.2));cursor:not-allowed;box-shadow:none;opacity:0.6;}
+button::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation:shimmer 3s ease infinite;}
+@keyframes shimmer{0%{left:-100%;}100%{left:200%;}}
+.error{color:#ff4d6d;margin-top:15px;font-size:12px;font-family:'Space Mono',monospace;}
+.login{margin-top:20px;font-size:12px;text-align:center;color:#2a4a6a;font-family:'Space Mono',monospace;}
+.login a{color:#00d2ff;text-decoration:none;font-weight:700;transition:opacity 0.2s;}
+.login a:hover{opacity:0.75;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
-
 <body>
-
-<div class="card">
-
-<h2>Create Account</h2>
-<p style="color:#aaa">// NEW USER REGISTER</p>
-
-<form action="/register" method="POST">
-
-<label>Username</label>
-<input type="text" name="username" required>
-
-<label>Password</label>
-<input type="password" name="password" required>
-
-<label>Confirm Password</label>
-<input type="password" name="confirm_password" required>
-
-<button type="submit">CREATE ACCOUNT</button>
-
-</form>
-
-<div class="login">
-Already have an account?  
-<a href="/">Login</a>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="wrapper">
+  <div class="top-badge"><div class="badge-dot"></div>IDS SYSTEM · NEW USER</div>
+  <div class="card">
+    <div class="tag">// NEW USER REGISTER</div>
+    <h2>Create Account</h2>
+    <div class="sub">intrusion_detection_system.exe</div>
+    <div class="divider"></div>
+    <form action="/register" method="POST">
+      <label>Username</label>
+      <div class="input-wrap">
+        <span class="input-icon">👤</span>
+        <input type="text" name="username" placeholder="Enter your username" required>
+      </div>
+      <label>Password</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" name="password" id="pwd" placeholder="Create a strong password" required oninput="checkStrength(this.value)">
+      </div>
+      <div class="strength-bar">
+        <div class="strength-seg" id="s1"></div><div class="strength-seg" id="s2"></div>
+        <div class="strength-seg" id="s3"></div><div class="strength-seg" id="s4"></div>
+      </div>
+      <div class="strength-label" id="strengthLabel">Enter a password</div>
+      <label>Confirm Password</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔑</span>
+        <input type="password" name="confirm_password" id="cpwd" placeholder="Repeat your password" required oninput="checkMatch()">
+      </div>
+      <div class="match-hint" id="matchHint"></div>
+      <button type="submit" id="submitBtn" disabled>CREATE ACCOUNT</button>
+    </form>
+    <div class="error"></div>
+    <div class="login">Already have an account? &nbsp;<a href="/">Login</a></div>
+  </div>
 </div>
-
-</div>
-
+<script>
+function checkStrength(val){
+  const segs=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
+  const label=document.getElementById('strengthLabel');
+  const colors=['#ef4444','#f97316','#fbbf24','#22c55e'];
+  const labels=['Weak','Fair','Good','Strong'];
+  let score=0;
+  if(val.length>=6)score++;if(val.length>=10)score++;
+  if(/[A-Z]/.test(val)&&/[0-9]/.test(val))score++;
+  if(/[^A-Za-z0-9]/.test(val))score++;
+  segs.forEach((s,i)=>{s.style.background=i<score?colors[score-1]:'rgba(255,255,255,0.06)';});
+  label.textContent=val?labels[score-1]||'Weak':'Enter a password';
+  label.style.color=val?colors[score-1]:'#2a4a6a';
+  checkMatch();
+}
+function checkMatch(){
+  const pwd=document.getElementById('pwd').value;
+  const cpwd=document.getElementById('cpwd').value;
+  const hint=document.getElementById('matchHint');
+  const btn=document.getElementById('submitBtn');
+  if(!cpwd){hint.textContent='';btn.disabled=true;return;}
+  if(pwd===cpwd){hint.textContent='✓ Passwords match';hint.style.color='#22c55e';btn.disabled=false;}
+  else{hint.textContent='✗ Passwords do not match';hint.style.color='#ef4444';btn.disabled=true;}
+}
+</script>
 </body>
 </html>
