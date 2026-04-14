@@ -397,7 +397,46 @@ def predict():
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+@app.route("/admin/uploads", methods=["GET"])
+def admin_uploads():
+    files = os.listdir(UPLOAD_FOLDER)
 
+    data = []
+    for i, f in enumerate(files, start=1):
+        data.append({
+            "id": i,
+            "username": "user",
+            "filename": f,
+            "uploaded_at": datetime.now().isoformat(),
+            "status": "Pending",
+            "prediction": None,
+            "confidence": None
+        })
+
+    return jsonify(data)
+@app.route("/admin/file/<int:file_id>", methods=["GET"])
+def analyze_file(file_id):
+    files = os.listdir(UPLOAD_FOLDER)
+
+    if file_id > len(files):
+        return jsonify({"error": "Invalid file"}), 400
+
+    file_path = os.path.join(UPLOAD_FOLDER, files[file_id - 1])
+
+    try:
+        df = pd.read_csv(file_path)
+
+        # Dummy prediction (replace with your model)
+        prediction = "Normal"
+        confidence = 0.95
+
+        return jsonify({
+            "prediction": prediction,
+            "confidence": confidence
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 # ================= RUN =================
 if __name__ == "__main__":
     print("🚀 Running on http://127.0.0.1:5001")
