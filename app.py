@@ -195,8 +195,17 @@ def map_label(x, known_classes, alias_map, normal_class):
 @app.route("/")
 def home():
     return render_template("login.html")
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        # get form data
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # for now just print (or save later)
+        print(username, password)
+
+        return "Registered Successfully ✅"
     return render_template("register.html")
 @app.route("/admin")
 def admin():
