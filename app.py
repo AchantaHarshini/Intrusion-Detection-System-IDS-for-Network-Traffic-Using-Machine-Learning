@@ -195,6 +195,16 @@ def map_label(x, known_classes, alias_map, normal_class):
 @app.route("/")
 def home():
     return render_template("login.html")
+    @app.route("/register")
+def register():
+    return render_template("register.html")
+    @app.route("/admin")
+def admin():
+    return render_template("admin-dashboard.html")
+
+@app.route("/user")
+def user():
+    return render_template("user-dashboard.html")
 # ================= UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
