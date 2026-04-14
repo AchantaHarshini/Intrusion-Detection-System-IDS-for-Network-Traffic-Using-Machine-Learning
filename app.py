@@ -200,7 +200,19 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        return redirect("/user")
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        print("Login:", username, password)
+
+        # Admin login
+        if username == "admin" and password == "admin":
+            return redirect("/admin")
+
+        # Normal user
+        else:
+            return redirect("/user")
+
     return render_template("login.html")
 
 
