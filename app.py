@@ -192,37 +192,33 @@ def map_label(x, known_classes, alias_map, normal_class):
     return normal_class
 
 # ================= HOME =================
+@app.route("/")
+def home():
+    return render_template("login.html")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        # simple check (you can improve later)
-        if username == "admin" and password == "admin":
-            return redirect("/admin")
-        else:
-            return redirect("/user")
-
+        return redirect("/user")
     return render_template("login.html")
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # get form data
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        # for now just print (or save later)
-        print(username, password)
-
-        return "Registered Successfully ✅"
+        return redirect("/")
     return render_template("register.html")
-@app.route("/admin")
-def admin():
-    return render_template("admin-dashboard.html")
+
+
 @app.route("/user")
 def user():
     return render_template("user-dashboard.html")
+
+
+@app.route("/admin")
+def admin():
+    return render_template("admin-dashboard.html")
 # ================= UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
