@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_templates
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
@@ -194,7 +194,7 @@ def map_label(x, known_classes, alias_map, normal_class):
 # ================= HOME =================
 @app.route("/")
 def home():
-    return render_template("login.html")
+    return render_templates("login.html")
 # ================= UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
