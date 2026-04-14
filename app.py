@@ -233,7 +233,7 @@ def upload():
     return jsonify({"message": "File uploaded successfully"})
 
 # ================= PREDICT =================
-@app.route("/predict", methods=["GET"])
+@app.route("/predict", methods=["POST"])
 def predict():
     global LAST_UPLOADED_FILE
 
