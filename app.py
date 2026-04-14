@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template,redirect
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
@@ -192,8 +192,18 @@ def map_label(x, known_classes, alias_map, normal_class):
     return normal_class
 
 # ================= HOME =================
-@app.route("/")
-def home():
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # simple check (you can improve later)
+        if username == "admin" and password == "admin":
+            return redirect("/admin")
+        else:
+            return redirect("/user")
+
     return render_template("login.html")
 @app.route("/register", methods=["GET", "POST"])
 def register():
