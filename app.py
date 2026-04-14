@@ -196,6 +196,9 @@ def map_label(x, known_classes, alias_map, normal_class):
 def home():
     return "🚀 IDS Backend Running"
 
+@app.route("/")
+def home():
+    return render_template("login.html")
 # ================= UPLOAD =================
 @app.route("/upload", methods=["POST"])
 def upload():
